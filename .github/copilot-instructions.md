@@ -99,6 +99,10 @@ This file is generated from the prompts' YAML frontmatter by
 
 - **agent-instructions-audit** — Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
   Read: `DocsHygiene/agent-instructions-audit.prompt.md`
+  Related: `agent-instructions-fix`
+- **agent-instructions-fix** — Action findings from agent-instructions-audit. Reword vague rules, add examples, codify undocumented patterns, resolve contradictions, retire superseded rules. Commit per category. Local commits only.
+  Read: `DocsHygiene/agent-instructions-fix.prompt.md`
+  Related: `agent-instructions-audit`
 - **doc-code-drift-audit** — Read-only audit that finds places where documentation says one thing and the code does another (outdated commands, renamed env vars, drifted signatures, dead links).
   Read: `DocsHygiene/doc-code-drift-audit.prompt.md`
   Related: `doc-code-drift-fix`

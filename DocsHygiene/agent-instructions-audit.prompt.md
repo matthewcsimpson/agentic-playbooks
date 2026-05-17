@@ -1,5 +1,6 @@
 ---
 description: Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
+related: [agent-instructions-fix]
 ---
 
 # Audit agent instructions
@@ -8,7 +9,8 @@ Read the project's agent / LLM instruction files (CLAUDE.md, AGENTS.md,
 Copilot instructions, Cursor rules, and any nested variants) and audit
 them: which rules are vague, missing concrete examples, no longer
 followed by the code, contradictory, or candidates for mechanical
-enforcement. Output a triaged list of doc fixes.
+enforcement. Output a triaged list of doc fixes the companion
+`agent-instructions-fix` playbook can action.
 
 This is the meta-prompt the other audits hint at. When an audit
 catches a rule the codebase didn't follow, the real fix may be to
@@ -158,6 +160,22 @@ Rules currently doc-only that could be moved to lint / hooks:
 
 - Rule N (in `<file>`) — "<text>" — propose: <hook / ESLint rule /
   pre-commit check>
+
+## Actions summary
+
+Index of rule findings by suggested action — the fix playbook reads
+this to filter what to action per category. Every rule appears
+exactly once; `keep` is a count, not a list.
+
+- **Reword**: Rule N (in `<file>`), Rule M (in `<file>`), ...
+- **Add example**: Rule N (in `<file>`), ...
+- **Retire**: Rule N (in `<file>`), ...
+- **Enforce mechanically**: Rule N (in `<file>`) → via <mechanism>, ...
+- **Keep**: <count> rules unchanged
+
+Missing rules (Step 4) and cross-file contradictions are listed in
+their own sections above and have their own fix categories — the
+fix actions those separately and doesn't need them indexed here.
 
 ## Summary
 
