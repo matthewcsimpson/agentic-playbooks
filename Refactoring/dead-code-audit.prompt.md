@@ -66,13 +66,13 @@ For each static candidate, and for files the tool didn't cover
 slipped into the source tree), verify:
 
 - **Truly unused** — grep the symbol name across the whole repo,
-  not just source. Confirm no callers anywhere. For CSS-modules
-  class exports specifically, restricting the grep to `.ts` / `.tsx`
-  (or the project's component file extensions) is not enough — also
-  grep `.scss` / `.css` / `.module.*` for `composes:\s+<name>\s+from`,
-  since a class with zero TS callers can still be load-bearing via
-  `composes:` in a sibling stylesheet. Same idea for any other
-  string-keyed cross-file reference the language server can't follow.
+  not just source. Confirm no callers anywhere.
+- **CSS-modules class exports** — also grep `.scss` / `.css` for
+  `composes:` followed by the name and `from`. A class with zero
+  TS / TSX callers can still be load-bearing via `composes:` in a
+  sibling stylesheet, and the regression only surfaces at the next
+  CSS build. Same idea for any other string-keyed cross-file
+  reference the language server can't follow.
 - **Used only by tests** — flag separately. Production-only test
   fixtures aren't strictly dead but bloat the codebase.
 - **Used only behind a flag** — read flag defaults and any
