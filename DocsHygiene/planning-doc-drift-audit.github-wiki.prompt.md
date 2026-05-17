@@ -1,0 +1,241 @@
+---
+description: Read-only audit of decision/scope/architecture drift between a GitHub repo's wiki (planning docs) and the issues + commits that have landed since. Surfaces contradictions, does not edit.
+related: [planning-doc-drift-fix, doc-code-drift-audit, audit-duplicate-issues-github]
+---
+
+# Planning-doc drift audit — GitHub Wiki variant
+
+Audit a GitHub repository's wiki against the project's issues and
+recent commits. Surface places where the wiki's *original*
+planning docs (intent, design choices, scope) have been overtaken
+by decisions landed in closed issues, in-flight plans on open
+issues, or refactors visible in the commit log.
+
+**This prompt extends [`core/planning-doc-drift-audit.core.prompt.md`](./core/planning-doc-drift-audit.core.prompt.md).**
+Read the core file first for the workflow shape (Step 0 ask-for-
+scope, Step 3 claim ↔ reality pairing, Step 4 drift taxonomy,
+Step 5 report format, plus the Constraints). This file supplies
+the GitHub-specific bits: sibling-clone convention,
+`gh` / `git` commands, and the exact report path.
+
+If pasting into a chat without filesystem access, paste the core
+first, then this variant.
+
+---
+
+## Assumed platform
+
+- GitHub repository with a wiki enabled.
+- `gh` CLI installed and on PATH.
+- `git` installed.
+- User is already authenticated (`gh auth status` reports a
+  logged-in account).
+- Agent has shell + filesystem access.
+
+---
+
+## Sibling-clone convention
+
+GitHub serves a wiki as a separate git repo at
+`https://github.com/<owner>/<repo>.wiki.git`. This playbook
+expects it cloned **as a sibling of the main repo**:
+
+```
+/Users/foo/Projects/bar/        ← main repo (cwd)
+/Users/foo/Projects/bar.wiki/   ← wiki clone (sibling)
+```
+
+That path (`<main-repo>.wiki/` next to `<main-repo>/`) matches
+GitHub's default `git clone <wiki-url>` output. Do not clone to
+`/tmp/`, into the main repo, or into a hidden directory — sibling
+keeps the wiki obviously co-located, easy to edit, and easy to
+push by hand.
+
+If the sibling clone is missing, this playbook **stops and
+prints** the exact command:
+
+```
+git clone https://github.com/<owner>/<repo>.wiki.git ../<repo>.wiki
+```
+
+Do not auto-clone from inside the prompt. Cloning into a parent
+directory is the kind of side effect that should be the user's
+explicit choice.
+
+---
+
+## §0 — Scope (GitHub specifics)
+
+When the core's Step 0 asks for the project, the format is
+`OWNER/REPO` (e.g. `acme-corp/website`). Default to the current
+repo's `gh repo view` output only if the user says "the project
+I'm in"; otherwise ask:
+
+> Which repository's wiki should I audit? (`OWNER/REPO`, e.g.
+> `acme-corp/website`)
+
+The doc surface is "all wiki pages" by default. Wiki pages are
+markdown files at the root of the sibling clone (`*.md`); GitHub
+wikis don't use subdirectories. If the user wants to scope to
+named pages, accept a list of page names.
+
+---
+
+## §1 — Verify access and preconditions
+
+Run, in order, stopping on the first failure:
+
+```
+gh auth status
+```
+
+If unauthenticated, stop. Print the user-facing instruction:
+"Run `gh auth login` from your terminal, then re-invoke this
+playbook." Do not attempt `gh auth login` from inside the prompt.
+
+```
+gh repo view OWNER/REPO --json hasWikiEnabled,defaultBranchRef
+```
+
+If `hasWikiEnabled` is false, stop with: "This repo has no wiki
+enabled — nothing to audit." If the repo is not found, stop with
+the gh error.
+
+```
+test -d ../<repo>.wiki
+```
+
+If the sibling clone is missing, stop and print the `git clone`
+command from above. Do not auto-clone.
+
+```
+git -C ../<repo>.wiki status --porcelain
+```
+
+If output is non-empty (uncommitted changes in the wiki clone),
+stop. The audit is read-only, but the *fix* playbook will refuse
+to run with a dirty clone, and surfacing it now saves the user a
+round-trip. Print: "The wiki clone has uncommitted changes — commit
+or stash them in `../<repo>.wiki/` before running the fix
+playbook."
+
+```
+git -C ../<repo>.wiki fetch && git -C ../<repo>.wiki log -1 --format=%cr
+```
+
+If the wiki clone hasn't been updated within the last hour, run
+`git -C ../<repo>.wiki pull --ff-only` and report. If the pull
+fails (diverged history), stop and flag for human review.
+
+---
+
+## §2 — Ingest the inputs (GitHub commands)
+
+Determine the cutoff. If the audit report from the previous run
+exists at `docs/audits/planning-doc-drift.github-wiki.md`, parse
+its `Date:` header — that's the `since` value. Otherwise default
+to 90 days ago.
+
+Closed issues since cutoff:
+
+```
+gh issue list --repo OWNER/REPO --state closed --limit 500 \
+  --search "closed:>=<cutoff>" \
+  --json number,title,body,labels,closedAt,milestone,url,stateReason
+```
+
+Open issues (all current):
+
+```
+gh issue list --repo OWNER/REPO --state open --limit 500 \
+  --json number,title,body,labels,milestone,assignees,url
+```
+
+If either list hits 500, add `--paginate` to fetch all pages.
+`gh issue list` already excludes pull requests.
+
+Recent commits on the default branch:
+
+```
+git log --since=<cutoff> --pretty=format:'%H|%ci|%s' --name-status origin/<default-branch>
+```
+
+For commits whose subject suggests rename / move / split (regex:
+`rename|move|extract|split|consolidate|remove`), capture the full
+file-change list — those are the architecture-drift signal.
+
+Wiki pages:
+
+```
+ls ../<repo>.wiki/*.md
+```
+
+Read each one. Capture the page name (file basename) and last-
+modified date (`git -C ../<repo>.wiki log -1 --format=%ci -- <file>`).
+
+Print the one-line scope summary:
+
+```
+Scanning <N> wiki pages against <M closed + K open> issues and <C> commits since <cutoff>.
+```
+
+---
+
+## §3–4 — Claim ↔ reality pairing and categorisation
+
+Follow the core. GitHub-specific notes:
+
+- **Decision drift** — closed-issue `stateReason: "completed"` plus
+  a PR merge in the linked timeline is the strongest signal a
+  decision landed. `stateReason: "not_planned"` plus a wiki page
+  still describing the feature is scope drift, not decision drift.
+- **Architecture drift** — commit subjects like
+  `rename: foo → bar` or files added under a new path while the
+  old path's files are deleted are the clearest signals. Read the
+  commit body for the *why* — it often names the wiki page if the
+  author was conscientious.
+- **Mechanical drift** — a renamed file path mentioned verbatim in
+  a wiki page. Strong overlap with `doc-code-drift-audit`'s remit,
+  but in the wiki rather than repo-local docs.
+
+Stale threshold (core's "N months"): **6 months** for GitHub
+wikis. A page untouched for 6+ months whose claims still check
+out is `Stale-but-correct`.
+
+---
+
+## §5 — Report path
+
+Write to **`docs/audits/planning-doc-drift.github-wiki.md`** in
+the main repo. Create the `docs/audits/` directory if absent
+(matches the convention used by `doc-code-drift-audit` and
+`post-milestone-audit-*`).
+
+If a prior report exists at that path, **do not overwrite blindly**.
+Read it first, lift the `Date:` line into a `Prior audit:` line
+in the new report so the diff is obvious, then overwrite.
+
+Use the core's report shape verbatim. Variant label in the
+heading: `GitHub Wiki`. Include in the header:
+
+```
+Wiki clone: ../<repo>.wiki/  (HEAD: <short-sha>)
+```
+
+So the user can re-derive the exact state the audit was run
+against.
+
+---
+
+## Constraints (GitHub specifics on top of the core)
+
+- Do not run `gh auth login`, `git clone`, or `git pull` with
+  non-fast-forward strategies from inside the prompt. Stop and
+  print the command for the user to run.
+- Do not write to the wiki clone. The audit is read-only on both
+  the main repo and the wiki clone.
+- If the wiki clone has uncommitted changes, surface it but do
+  not stash or revert. The audit still runs; the fix won't.
+- If the wiki is empty (no `.md` files), stop with "Wiki is empty
+  — nothing to audit." The user may have enabled the wiki but
+  never populated it.

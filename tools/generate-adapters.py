@@ -112,6 +112,8 @@ VARIANT_SIGNALS: dict[str, tuple[str, list[str]]] = {
                      []),  # usage-context only — ask the user (a repo can have .github/ for Actions but use a different tracker for tickets)
     "clickup":      ("ClickUp List or Folder",
                      []),  # usage-context only — ask the user
+    "github-wiki":  ("GitHub repository wiki (planning docs)",
+                     []),  # usage-context only — ask the user; expects sibling clone at ../<repo>.wiki/
 }
 
 
