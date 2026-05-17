@@ -46,10 +46,34 @@ expects it cloned **as a sibling of the main repo**:
 ```
 
 That path (`<main-repo>.wiki/` next to `<main-repo>/`) matches
-GitHub's default `git clone <wiki-url>` output. Do not clone to
-`/tmp/`, into the main repo, or into a hidden directory — sibling
-keeps the wiki obviously co-located, easy to edit, and easy to
-push by hand.
+GitHub's default `git clone <wiki-url>` output.
+
+**Deriving `<repo>`.** Use the basename of the main repo's
+working tree:
+
+```
+REPO=$(basename "$(git rev-parse --show-toplevel)")
+```
+
+`<repo>` in every command below is that value. If the user
+cloned the main repo under a different directory name (e.g.
+`git clone … my-fork`), this basename will diverge from the
+GitHub repo name returned by `gh repo view --json name`.
+**Detect and stop** if they differ:
+
+```
+gh repo view OWNER/REPO --json name -q .name
+```
+
+Print: "Local repo directory `<basename>` differs from GitHub
+repo name `<gh-name>`. Rename the local directory or move the
+wiki clone to match, then re-run." Don't try to be clever about
+it — the sibling-clone path is load-bearing for every later
+command, and a mismatch silently breaks the fix variant too.
+
+Do not clone to `/tmp/`, into the main repo, or into a hidden
+directory — sibling keeps the wiki obviously co-located, easy
+to edit, and easy to push by hand.
 
 If the sibling clone is missing, this playbook **stops and
 prints** the exact command:
@@ -75,9 +99,11 @@ I'm in"; otherwise ask:
 > `acme-corp/website`)
 
 The doc surface is "all wiki pages" by default. Wiki pages are
-markdown files at the root of the sibling clone (`*.md`); GitHub
-wikis don't use subdirectories. If the user wants to scope to
-named pages, accept a list of page names.
+markdown files in the sibling clone — most GitHub wikis keep
+every page at the root, but subdirectories are supported and
+some projects use them, so enumerate recursively rather than
+assuming a flat layout. If the user wants to scope to named
+pages, accept a list of page names (matched against basenames).
 
 ---
 
@@ -120,12 +146,15 @@ or stash them in `../<repo>.wiki/` before running the fix
 playbook."
 
 ```
-git -C ../<repo>.wiki fetch && git -C ../<repo>.wiki log -1 --format=%cr
+git -C ../<repo>.wiki pull --ff-only
 ```
 
-If the wiki clone hasn't been updated within the last hour, run
-`git -C ../<repo>.wiki pull --ff-only` and report. If the pull
-fails (diverged history), stop and flag for human review.
+Run unconditionally — it's a no-op when current, and the only
+robust way to ensure the audit runs against fresh wiki state.
+If the pull fails (diverged history, conflicting changes), stop
+and flag for human review. Don't try to parse `%cr` / "N hours
+ago" relative timestamps to gate the pull — that's a fragile
+heuristic and the pull is cheap.
 
 ---
 
@@ -133,13 +162,15 @@ fails (diverged history), stop and flag for human review.
 
 Determine the cutoff. If the audit report from the previous run
 exists at `docs/audits/planning-doc-drift.github-wiki.md`, parse
-its `Date:` header — that's the `since` value. Otherwise default
-to 90 days ago.
+its `Date:` header (always `YYYY-MM-DD`, see §5) — that's the
+`since` value. Otherwise default to 90 days ago, formatted as
+`YYYY-MM-DD`. The cutoff variable is plain ISO date — no times,
+no relative strings.
 
 Closed issues since cutoff:
 
 ```
-gh issue list --repo OWNER/REPO --state closed --limit 500 \
+gh issue list --repo OWNER/REPO --state closed --paginate \
   --search "closed:>=<cutoff>" \
   --json number,title,body,labels,closedAt,milestone,url,stateReason
 ```
@@ -147,12 +178,13 @@ gh issue list --repo OWNER/REPO --state closed --limit 500 \
 Open issues (all current):
 
 ```
-gh issue list --repo OWNER/REPO --state open --limit 500 \
+gh issue list --repo OWNER/REPO --state open --paginate \
   --json number,title,body,labels,milestone,assignees,url
 ```
 
-If either list hits 500, add `--paginate` to fetch all pages.
-`gh issue list` already excludes pull requests.
+`--paginate` is unconditional — it's a no-op for small repos and
+the right thing for large ones. `gh issue list` already excludes
+pull requests.
 
 Recent commits on the default branch:
 
@@ -167,11 +199,13 @@ file-change list — those are the architecture-drift signal.
 Wiki pages:
 
 ```
-ls ../<repo>.wiki/*.md
+find ../<repo>.wiki -name '*.md' -not -path '*/.git/*'
 ```
 
-Read each one. Capture the page name (file basename) and last-
-modified date (`git -C ../<repo>.wiki log -1 --format=%ci -- <file>`).
+Read each one. Capture the page path relative to the wiki root
+(e.g. `Architecture.md`, `design/multi-tenant.md`) and the
+last-modified date
+(`git -C ../<repo>.wiki log -1 --format=%ci -- <relative-path>`).
 
 Print the one-line scope summary:
 
@@ -216,7 +250,10 @@ Read it first, lift the `Date:` line into a `Prior audit:` line
 in the new report so the diff is obvious, then overwrite.
 
 Use the core's report shape verbatim. Variant label in the
-heading: `GitHub Wiki`. Include in the header:
+heading: `GitHub Wiki`. The `Date:` field is `YYYY-MM-DD` (no
+times, no timezones) so the next audit run can use it directly
+as the `gh issue list --search "closed:>=…"` cutoff. Include
+in the header:
 
 ```
 Wiki clone: ../<repo>.wiki/  (HEAD: <short-sha>)

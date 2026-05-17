@@ -108,12 +108,17 @@ For each category in scope:
       swap (e.g. a renamed module appears throughout a page).
       Read the whole page once, edit every affected reference,
       keep the surrounding narrative intact.
-   c. **Decision drift** — when reversing a decision, leave a
-      short trailing note where appropriate ("Previously this
-      page described approach X; superseded by #<issue> on
-      <date>.") *only if* the page is a living spec the team
-      relies on for orientation. Throwaway pages don't need a
-      breadcrumb.
+   c. **Decision drift** — by default, replace the contradictory
+      claim cleanly. Don't add a "previously this page said X"
+      breadcrumb — the per-category commit message and the in-doc
+      CHANGELOG (Step 5) already record the *why*. Adding a
+      trailing note in the body is opt-in via the user's category
+      selection ("decision-with-breadcrumb"), and only fires for
+      pages the variant identifies as **navigationally
+      load-bearing** — pages linked from the doc system's
+      sidebar / landing page (e.g. `_Sidebar.md` in the GitHub
+      wiki case). The variant defines its own load-bearing
+      heuristic; the core defers to it.
    d. **Scope drift** — when removing scope that was descoped,
       delete cleanly. Don't leave "[deleted]" stubs. The
       CHANGELOG entry (Step 5) is the historical trail.

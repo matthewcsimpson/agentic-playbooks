@@ -98,10 +98,11 @@ checked against issues / commits / code:
 - **Design choices** — "we use approach X" / "library Y" / "pattern
   Z." The doc claims a choice was made.
 - **Scoped features** — "the system will support A, B, C." The doc
-  claims work is planned or done.
+  claims work is planned or done. Phasing claims ("Phase 1 ships
+  before Phase 2") fall here — if the order changed, that's scope
+  drift, not its own category.
 - **Named modules / files / endpoints** — "the `Foo` service
   handles X" / "`apps/web/proxy.ts` does Y."
-- **Sequencing / dependencies** — "Phase 1 ships before Phase 2."
 - **Non-goals / exclusions** — "we explicitly do not support W."
 
 Don't extract:
@@ -161,7 +162,24 @@ keeps the trail clean.
 
 ## Step 5 — Report
 
-The variant specifies the exact report path. Structure:
+If Steps 3–4 found **zero drifts** (including zero `Stale-but-
+correct` entries), don't write a half-empty skeleton report.
+Write a one-line file at the variant's report path:
+
+```
+# Planning-doc drift audit — <variant label>
+Date: <today>
+Project: <project address>
+No drift found. <N pages> scanned against <M closed + K open>
+issues and <C> commits since <cutoff>.
+```
+
+Then stop. The next audit run will still find this report and
+use its `Date:` header as the cutoff, so the empty result is
+load-bearing for continuity.
+
+Otherwise, the variant specifies the exact report path.
+Structure:
 
 ```
 # Planning-doc drift audit — <variant label>

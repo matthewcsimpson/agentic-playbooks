@@ -27,14 +27,18 @@ first, then this variant.
 ## Assumed platform
 
 - GitHub repository with a wiki enabled.
+- `gh` CLI installed and on PATH.
 - `git` installed.
+- User is already authenticated (`gh auth status` reports a
+  logged-in account). The core's Step 3 re-verifies each finding
+  by re-reading the issue's current state — that requires `gh`.
 - Wiki repo cloned as a sibling of the main repo at
   `../<repo>.wiki/` (see "Sibling-clone convention" in the audit
-  variant for the rationale).
+  variant for the rationale and `<repo>` derivation).
 - Agent has shell + filesystem access.
 
-`gh` is not required for this playbook — all writes are to the
-local wiki clone, and the push is left to the user.
+The push is left to the user — this playbook never runs `git push`
+on the wiki clone, regardless of `gh` auth state.
 
 ---
 
@@ -52,13 +56,24 @@ If no report exists, stop and recommend:
 
 ## §2 — Re-verify preconditions
 
+Derive `<repo>` exactly as the audit variant does — basename of
+`git rev-parse --show-toplevel`, with the same divergence check
+against `gh repo view --json name -q .name`. If the names differ,
+stop with the audit variant's wording.
+
 Repeat the audit variant's precondition checks, in order:
 
 ```
+gh auth status
 test -d ../<repo>.wiki
 git -C ../<repo>.wiki status --porcelain
-git -C ../<repo>.wiki fetch && git -C ../<repo>.wiki log -1 --format=%cr
+git -C ../<repo>.wiki pull --ff-only
 ```
+
+If `gh auth status` fails, stop with the audit variant's wording
+(`gh auth login`-from-terminal instruction). The fix re-verifies
+findings against current issue state, which needs authenticated
+`gh`.
 
 If the sibling clone is missing, print the clone command and
 stop. If it's dirty, **refuse to run** — print:
@@ -70,18 +85,28 @@ stop. If it's dirty, **refuse to run** — print:
 Do not stash, discard, or amend. The user's WIP is sacred (see
 core Constraints).
 
-Optionally `git -C ../<repo>.wiki pull --ff-only` if the local
-copy is more than an hour behind. If the pull fails, stop and
-flag.
+`git pull --ff-only` runs unconditionally — it's a no-op when the
+local copy is current, and it's the only way to ensure the fix
+edits aren't built on stale wiki state. If the pull fails
+(diverged history, conflicting changes), stop and flag for human
+review.
+
+Re-verification of individual findings uses `gh issue view <n>`
+and `git show <sha>` from inside the main repo. If the issue
+state has changed since the audit (reopened, retitled with new
+scope) or the commit has been reverted, skip the finding and
+record under "Skipped — audit fix no longer applies."
 
 ---
 
 ## §4 — Edit and commit per category (GitHub specifics)
 
-Edits happen on files inside `../<repo>.wiki/`. Wiki page names
-are the markdown filenames at the wiki root, e.g.
-`../<repo>.wiki/Home.md`, `../<repo>.wiki/Architecture.md`.
-GitHub wikis don't support subdirectories.
+Edits happen on files inside `../<repo>.wiki/`. Wiki page paths
+are markdown files anywhere in the clone, e.g.
+`../<repo>.wiki/Home.md`, `../<repo>.wiki/Architecture.md`,
+`../<repo>.wiki/design/multi-tenant.md`. Most GitHub wikis are
+flat, but subdirectories are supported — use the page paths the
+audit report recorded verbatim.
 
 For each in-scope category with at least one actionable finding:
 
@@ -131,8 +156,10 @@ issue / commit so a reader can trace why the wiki shifted.
 ```
 
 If the page doesn't exist yet, create it with the header above
-plus the first run's entry. Append new entries at the top (newest
-first) so the most recent run is immediately visible.
+plus the first run's entry. **Prepend** each subsequent run's
+entry directly under the top-of-file `# Planning-doc drift fix
+log` heading so the newest run is immediately visible to a
+reader landing on the page.
 
 Commit the CHANGELOG update as a final, separate commit:
 
