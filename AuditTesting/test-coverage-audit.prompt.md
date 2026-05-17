@@ -117,8 +117,22 @@ For each testable file, classify:
   missing.
 - ❌ **Missing** — no test references it at all.
 
+**Classify per file, not per folder.** When a folder contains a barrel
+re-export (`index.ts`, `index.js`, `mod.rs`, `__init__.py`) plus other
+source files, the barrel is excluded from the testable set (per the
+skip list above) — *but each sibling source file is classified on its
+own merits*. Example: a folder with `Foo.ts`, `Foo.test.ts`, and
+`index.ts` (re-export only) has `Foo.ts` as ✅ **Covered**. Do **not**
+aggregate the folder to ❌ Missing because the barrel has no companion
+test — the barrel was already taken out of scope, so its untested
+state is not a finding. This false-positive bites when an agent
+implicitly treats `index.ts` as the folder's canonical file and
+searches for `index.test.ts`; the rule is per-file, period.
+
 Group by feature / domain (infer from directory structure — e.g.
 `components/Checkout/**` → "Checkout"; `lib/auth/**` → "Auth").
+Grouping is for *report layout only* — it never changes a file's
+classification.
 
 ### 5. Prioritise
 
