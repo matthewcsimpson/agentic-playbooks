@@ -73,9 +73,10 @@ After `--install-global`, from any project:
   `db-migration-audit`, `post-milestone-audit`) → Claude detects the
   stack from the working directory and runs the matching variant.
 - **Usage-driven families** (`post-milestone-smoke-test`,
-  `audit-duplicate-issues`) → can't be detected from the file tree;
+  `audit-duplicate-issues`, `planning-doc-drift-audit`,
+  `planning-doc-drift-fix`) → can't be detected from the file tree;
   Claude asks which variant applies (smoke: api / cli / ios / web;
-  duplicate-issues: github / clickup).
+  duplicate-issues: github / clickup; planning-doc-drift: github-wiki).
 - **Natural language** still works — say "audit my test coverage" and
   the matching skill auto-triggers by description.
 
@@ -478,6 +479,18 @@ Audits that keep documentation honest.
   drift audit. Defaults to `hard` drifts only; updates docs to match
   current code, verifies links / snippets, commits locally per drift
   type. Does not push.
+- `planning-doc-drift-audit.github-wiki.prompt.md` — GitHub Wiki
+  variant. Read-only audit of *intent* drift: decision / scope /
+  architecture contradictions between a project wiki and the issues
+  + commits that have landed since. Expects the wiki sibling-cloned
+  at `../<repo>.wiki/`. Distinct from `doc-code-drift-audit`, which
+  catches mechanical drift in repo-local docs.
+- `planning-doc-drift-fix.github-wiki.prompt.md` — GitHub Wiki
+  variant. Actions findings from the planning-doc audit. Edits the
+  sibling-cloned wiki, commits per drift category, appends to an
+  in-wiki `CHANGELOG.md` page. Local commits only — never pushes.
+- `core/planning-doc-drift-{audit,fix}.core.prompt.md` — shared
+  scaffolds for the planning-doc-drift family (not invoked directly).
 
 See [`DocsHygiene/README.md`](DocsHygiene/README.md).
 
