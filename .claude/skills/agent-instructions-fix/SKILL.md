@@ -1,6 +1,6 @@
 ---
 name: agent-instructions-fix
-description: Action findings from agent-instructions-audit. Reword vague rules, add examples, codify undocumented patterns, resolve contradictions, retire superseded rules. Commit per category. Local commits only.
+description: Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
 user-invocable: false
 ---
 

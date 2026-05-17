@@ -80,7 +80,7 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
 - **`agent-instructions-audit`** — Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
   File: `../../DocsHygiene/agent-instructions-audit.prompt.md`
   Related: `agent-instructions-fix`
-- **`agent-instructions-fix`** — Action findings from agent-instructions-audit. Reword vague rules, add examples, codify undocumented patterns, resolve contradictions, retire superseded rules. Commit per category. Local commits only.
+- **`agent-instructions-fix`** — Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
   File: `../../DocsHygiene/agent-instructions-fix.prompt.md`
   Related: `agent-instructions-audit`
 - **`dead-code-audit`** — Find code that isn't used — exports never imported, components never rendered, branches never reached, env vars never read, permanently-on/off flags. Read-only.

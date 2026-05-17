@@ -1,5 +1,5 @@
 ---
-description: Action findings from agent-instructions-audit. Reword vague rules, add examples, codify undocumented patterns, resolve contradictions, retire superseded rules. Commit per category. Local commits only.
+description: Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
 related: [agent-instructions-audit]
 ---
 
@@ -22,6 +22,43 @@ restructuring sections, no tonal "polish."
 ## Inputs
 
 The user supplies:
+
+- **Consolidation strategy** — the most consequential decision, ask
+  it first. Two options:
+
+  - **Keep separate** (default) — each instruction file remains
+    independent. The fix resolves explicit contradictions per the
+    `resolve-contradiction` category but doesn't change which file
+    holds which rule. Use this when different tools genuinely read
+    from different files (e.g. GitHub Copilot reads
+    `.github/copilot-instructions.md` and won't follow pointers,
+    `.cursor/rules/` is loaded directly by Cursor).
+
+  - **Consolidate to one canonical + pointer files** — pick one
+    root-level instruction file (typically `CLAUDE.md` or
+    `AGENTS.md`) as the source of truth. Move every rule from the
+    other root-level files into it; leave each non-canonical file
+    as a thin pointer (e.g. `AGENTS.md` becomes
+    `"Rules for this project live in [\`CLAUDE.md\`](./CLAUDE.md)."`).
+
+    **Tradeoff to surface to the user before they pick this:** thin
+    pointers work for human readers and pointer-aware LLM agents
+    (Claude Code, Cursor's agent mode, etc.), but **static tool
+    readers** — notably GitHub Copilot reading
+    `.github/copilot-instructions.md`, and some Cursor flows — won't
+    follow markdown links and will effectively see an empty rule
+    set. Only choose this when all the project's tools either read
+    the canonical file directly or are pointer-aware. If unsure,
+    keep separate.
+
+    **Scope:** consolidation operates on tool-equivalent files
+    **at the same path level**. Root-level files (`CLAUDE.md`,
+    `AGENTS.md`, `.github/copilot-instructions.md` at the root)
+    consolidate to one root canonical. Nested per-directory
+    instruction files (e.g. `apps/web/CLAUDE.md`) are scope-
+    specific and **never** consolidated across paths — they serve a
+    different purpose. If consolidating, the fix also asks which
+    file should be canonical.
 
 - **Categories in scope** — any combination of `reword`,
   `add-example`, `codify-missing`, `resolve-contradiction`,
@@ -104,6 +141,66 @@ The re-check shape per category:
 - **Retire** — re-read the rule. If it's already gone, skip.
 
 ---
+
+## Step 3a — Consolidate (only if selected in Inputs)
+
+Skip this step entirely if the user picked **Keep separate**.
+
+If the user picked **Consolidate to one canonical + pointer files**,
+this runs **before** the category-by-category action — every later
+category then operates on the canonical file alone.
+
+1. **Confirm the canonical** the user picked (or ask now if not
+   specified). Hard rule: canonical must be a root-level
+   instruction file the project's tools actually read. Don't
+   suggest a non-standard filename like `RULES.md` as canonical
+   unless the user explicitly asks for it.
+
+2. **Move rules from non-canonical files into the canonical:**
+   - If a rule in a non-canonical file is identical (modulo
+     wording) to one in the canonical, drop it from the
+     non-canonical file — no need to copy.
+   - If a rule is unique to the non-canonical file, move it to
+     the canonical file under the matching section (use the
+     canonical's existing section structure; create a new
+     section only if no fit exists).
+   - If a rule contradicts the canonical, apply the audit's
+     `resolve-contradiction` recommendation. If the audit's
+     recommendation favours the non-canonical version, keep that
+     version in the canonical (i.e. update the canonical to
+     match) rather than silently dropping the smarter rule.
+     If the audit didn't analyse this pair, stop and ask the
+     user to pick.
+
+3. **Replace each non-canonical file's body with a one-line
+   pointer.** Keep the file's existing top-of-file frontmatter or
+   HTML comment if present (some tools need it). Then a single
+   line:
+
+   ```
+   Rules for this project live in [`<canonical>`](<relative-path>).
+   ```
+
+   Don't leave residual sections, partial rules, or "see also"
+   blocks — clean pointer only. Future audits will recognise the
+   pointer pattern (it doesn't match the "rule" shape the audit
+   looks for) and skip the file.
+
+4. **Commit:** one commit for the whole consolidation, since the
+   set of file edits is one logical change.
+
+   ```
+   docs: consolidate agent instructions into <canonical>
+   ```
+
+   Body lists each non-canonical file reduced to a pointer plus
+   the count of rules moved into the canonical.
+
+5. **After consolidation, the `resolve-contradiction` category
+   becomes a no-op** — there's a single source of truth, so any
+   audit findings under that category are inherently resolved.
+   Record them as "auto-resolved by consolidation" in the final
+   report.
 
 ## Step 3 — Action findings, category by category
 
@@ -301,6 +398,16 @@ Output a short summary:
 - Do not open a PR.
 - Do not action `enforce-mechanically` findings unless the user
   explicitly opted in.
+- Do not consolidate instruction files unless the user explicitly
+  selected the **Consolidate** input. Default is **Keep separate**.
+  Consolidation has a real tradeoff (static tool readers don't
+  follow pointers) — silent consolidation could leave a project's
+  GitHub Copilot effectively rule-less without the user noticing.
+- Do not consolidate **nested** per-directory instruction files
+  (e.g. `apps/web/CLAUDE.md`) into the root canonical. Nested files
+  exist to scope rules to a sub-directory; flattening them loses
+  that scope. Consolidation operates on tool-equivalent files
+  at the same path level only.
 - Do not rewrite prose adjacent to a rule edit. Replace the
   flagged content, leave everything else alone. Scope creep turns
   a focused fix into a sprawling review.
