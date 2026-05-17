@@ -103,6 +103,12 @@ generated from those sources by `tools/generate-adapters.py`.
 - **`doc-code-drift-fix`** — Action findings from doc-code-drift-audit. Update docs to match the code, verify links and snippets, commit per drift type. Local commits only.
   Path: `DocsHygiene/doc-code-drift-fix.prompt.md`
   Related: `doc-code-drift-audit`
+- **`planning-doc-drift-audit-github-wiki`** — Read-only audit of decision/scope/architecture drift between a GitHub repo's wiki (planning docs) and the issues + commits that have landed since. Surfaces contradictions, does not edit.
+  Path: `DocsHygiene/planning-doc-drift-audit.github-wiki.prompt.md`
+  Related: `planning-doc-drift-fix`, `doc-code-drift-audit`, `audit-duplicate-issues-github`
+- **`planning-doc-drift-fix-github-wiki`** — Action findings from planning-doc-drift-audit.github-wiki. Edit the sibling-cloned wiki, commit per drift category in the wiki repo, append to in-wiki CHANGELOG. Local commits only — never pushes.
+  Path: `DocsHygiene/planning-doc-drift-fix.github-wiki.prompt.md`
+  Related: `planning-doc-drift-audit`, `doc-code-drift-fix`
 
 ## IssueWorkflow
 

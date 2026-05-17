@@ -210,6 +210,26 @@ Variants:
 
 Related across the family: `dependency-audit-dotnet`
 
+### `planning-doc-drift-audit`
+
+Variants:
+
+- `planning-doc-drift-audit-github-wiki` — GitHub repository wiki (planning docs)
+  File: `../../DocsHygiene/planning-doc-drift-audit.github-wiki.prompt.md`
+  Detect: usage context — ask the user which variant applies.
+
+Related across the family: `planning-doc-drift-fix`, `doc-code-drift-audit`, `audit-duplicate-issues-github`
+
+### `planning-doc-drift-fix`
+
+Variants:
+
+- `planning-doc-drift-fix-github-wiki` — GitHub repository wiki (planning docs)
+  File: `../../DocsHygiene/planning-doc-drift-fix.github-wiki.prompt.md`
+  Detect: usage context — ask the user which variant applies.
+
+Related across the family: `planning-doc-drift-audit`, `doc-code-drift-fix`
+
 ### `post-milestone-audit`
 
 Variants:
