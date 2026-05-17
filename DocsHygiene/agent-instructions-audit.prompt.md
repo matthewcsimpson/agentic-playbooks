@@ -38,13 +38,38 @@ If only one instruction file exists, skip the question and audit it.
 
 Find every file matching any of:
 
-- `CLAUDE.md` at the root and any nested `CLAUDE.md` files.
-- `AGENTS.md` at the root and any nested `AGENTS.md` files.
-- `.github/copilot-instructions.md`.
-- `.github/instructions/**/*.md`.
-- `.cursor/rules/**/*` (or `.cursorrules`).
-- Any other `*.md` file at the repo root whose name matches a known
-  agent-instruction convention (e.g. `GEMINI.md`, `WINDSURF.md`).
+**Tool-specific canonical paths:**
+
+- `CLAUDE.md` at the root and any nested `CLAUDE.md` files (Claude Code).
+- `AGENTS.md` at the root and any nested `AGENTS.md` files (OpenAI
+  Codex + emerging cross-tool standard).
+- `.github/copilot-instructions.md` (GitHub Copilot).
+- `.github/instructions/**/*.md` (GitHub Copilot custom instructions).
+- `.cursor/rules/**/*.{md,mdc}` and `.cursorrules` (Cursor — `.mdc` is
+  the current rule format; `.cursorrules` is the older single-file form
+  some projects still use).
+- `.clinerules` (file) and `cline_docs/**/*.md` (Cline's rules file
+  plus its memory-bank pattern).
+- `CONVENTIONS.md` at the root (Aider's recommended convention file —
+  Aider reads this by default when present).
+
+**Pattern-based catch-all** (use judgment — if a file plainly addresses
+an AI agent, include it):
+
+- **Root `*.md` named after an LLM tool:** `GEMINI.md` (Gemini Code
+  Assist), `JULES.md` (Google Jules), `WINDSURF.md` (Windsurf),
+  `OPENCODE.md` (OpenCode), or similar.
+- **Tool-specific dotfile rules:** `.<tool>rules`, `.<tool>-guidelines`,
+  `.<tool>rc` — e.g. `.windsurfrules`, `.augment-guidelines`.
+- **Tool-specific config directories:** `.<tool>/` containing `*.md`
+  rule files — e.g. `.continue/`, `.zed/`, `.roo/`, `.kilo/`. Look
+  inside any `.<tool>/` directory at the repo root for content that
+  reads like rules or instructions.
+
+When you find a file via the catch-all that isn't a tool you
+recognise, surface it explicitly in the report's "Files audited" line
+(e.g. `FOO.md (assumed agent-instruction file by convention)`) so the
+user can confirm.
 
 List which files exist and which you'll be auditing. If multiple files
 are present, audit **all** of them — the cross-file pass is where
