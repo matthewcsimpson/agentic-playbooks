@@ -97,6 +97,10 @@ generated from those sources by `tools/generate-adapters.py`.
 
 - **`agent-instructions-audit`** — Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
   Path: `DocsHygiene/agent-instructions-audit.prompt.md`
+  Related: `agent-instructions-fix`
+- **`agent-instructions-fix`** — Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
+  Path: `DocsHygiene/agent-instructions-fix.prompt.md`
+  Related: `agent-instructions-audit`
 - **`doc-code-drift-audit`** — Read-only audit that finds places where documentation says one thing and the code does another (outdated commands, renamed env vars, drifted signatures, dead links).
   Path: `DocsHygiene/doc-code-drift-audit.prompt.md`
   Related: `doc-code-drift-fix`

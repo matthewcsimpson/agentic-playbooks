@@ -473,6 +473,12 @@ Audits that keep documentation honest.
   rules, Copilot instructions, nested variants) and audits them all
   for vague rules, missing examples, drifted compliance, cross-file
   contradictions, and mechanical-enforcement opportunities.
+- `agent-instructions-fix.prompt.md` — actions findings from the
+  agent-instructions audit. Rewords vague rules, adds concrete
+  examples, codifies undocumented patterns, resolves cross-file
+  contradictions, retires superseded rules. Commits per category.
+  Mechanical enforcement (adding the hook / lint rule / pre-commit
+  check) is opt-in via flag. Does not push.
 - `doc-code-drift-audit.prompt.md` — finds where READMEs / docs / inline
   comments disagree with the actual code.
 - `doc-code-drift-fix.prompt.md` — actions findings from the
