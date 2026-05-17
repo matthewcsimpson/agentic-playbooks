@@ -582,17 +582,30 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Status
 
-Stable at [v1.3.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.3.0).
-v1.3.0 adds two playbooks and tightens the dispatcher: a stack-agnostic
-`post-milestone-smoke-fix` (the behavioural counterpart to
-`post-milestone-fix`, scopes to ❌ Fail flows from a smoke-test report,
-clusters by root cause, commits per cluster), and an
-`audit-duplicate-issues-clickup` variant (List- or Folder-scoped via
-the ClickUp REST API, list-specific status sets handled). Dispatcher
-rule (d) generalised from "smoke-test is usage-driven" to "usage-driven
-families — ask, never auto-detect," now covering both
-`post-milestone-smoke-test` and `audit-duplicate-issues`. Catalog grew
-from 50 to 52 playbooks.
+Stable at [v1.4.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.4.0).
+v1.4.0 adds three playbooks and broadens two existing ones. The new
+`planning-doc-drift-audit` / `planning-doc-drift-fix` pair (first
+variant: `.github-wiki`) surfaces decision / scope / architecture
+drift between an external planning doc and the issues + commits that
+have landed since — distinct from `doc-code-drift-*`, which targets
+mechanical drift in repo-local docs. The wiki variant sibling-clones
+to `../<repo>.wiki/`, refuses to push, and records each run in three
+layers: per-category wiki commits, an in-wiki `CHANGELOG.md` page, and
+the audit report in `docs/audits/`. The new `agent-instructions-fix`
+completes the audit/fix pairing for `agent-instructions-audit` (the
+last DocsHygiene audit that was still audit-only); it commits per
+category (reword / add-example / codify-missing / resolve-contradiction
+/ retire), supports an opt-in flag for mechanical enforcement
+(adding the hook / ESLint rule / pre-commit check after a verify-the-
+mechanism-fires step), and offers an optional `consolidate to one
+canonical + pointer files` strategy with a static-tool-reader caveat.
+The companion `agent-instructions-audit` got a tightened auto-generated
+file skip rule (top-region + strict phrase, eliminates a meta-recursion
+false positive) and a broadened enumeration covering Cline, Aider, and
+modern `.mdc` Cursor rules. `test-coverage-audit` learned that
+classification is per-file even when a folder contains a barrel
+re-export, fixing a `#8`-style false positive. Catalog grew from 52 to
+55 playbooks.
 
 v1.2.1 was a patch release — doc-code-drift fixes against the repo
 itself (stale skill count, dead `DependencyHygiene/` link, renamed-slug
