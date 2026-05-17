@@ -67,6 +67,12 @@ slipped into the source tree), verify:
 
 - **Truly unused** — grep the symbol name across the whole repo,
   not just source. Confirm no callers anywhere.
+- **CSS-modules class exports** — also grep `.scss` / `.css` for
+  `composes:` followed by the name and `from`. A class with zero
+  TS / TSX callers can still be load-bearing via `composes:` in a
+  sibling stylesheet, and the regression only surfaces at the next
+  CSS build. Same idea for any other string-keyed cross-file
+  reference the language server can't follow.
 - **Used only by tests** — flag separately. Production-only test
   fixtures aren't strictly dead but bloat the codebase.
 - **Used only behind a flag** — read flag defaults and any
@@ -155,5 +161,9 @@ dead" items were deleted.
   directly.
 - Don't flag stub functions that throw `NotImplemented` /
   `unimplemented!` / `todo!` — they're intentional placeholders.
+- Don't flag a CSS-modules class as dead without grepping
+  `.scss` / `.css` / `.module.*` for `composes:` references —
+  source-file-only greps miss this and the regression only
+  surfaces at the next CSS build.
 - Be honest about uncertainty. "Probably dead but I can't see
   every caller" belongs in **Likely dead**, not **Hard dead**.
