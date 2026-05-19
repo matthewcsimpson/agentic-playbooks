@@ -639,8 +639,37 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Status
 
-Stable at [v1.5.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.5.0).
-v1.5.0 adds one collection and three playbooks. The new `SEOAudit/`
+Stable at [v1.6.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.6.0).
+v1.6.0 completes the `StackUpgrade/` collection's audit / fix pair
+convention. The existing `stack-upgrade-<framework>` family is renamed
+to `stack-upgrade-audit-<framework>` (it was the only planner-style
+playbook in the library without the `-audit` / `-fix` suffix). New:
+`stack-upgrade-fix-<framework>` for all 7 frameworks (dotnet, nestjs,
+nextjs, python, react-native, swift, terraform). Each fix variant
+extends a shared `core/stack-upgrade-fix.core.prompt.md` and actions
+the audit's plan — runs upstream codemods serially with verify-and-
+commit between, applies mechanical breaking-change edits, bumps the
+version pin with peer-dep co-bumps, and hands off to
+`post-milestone-audit-<framework>` for residual drift. Default fix
+scope is `codemods` + `version-bump` (the safest mechanical pieces);
+`mechanical-edits` and `post-bump` are opt-in. The fix prompt refuses
+to push, open PRs, bump before codemods have run, run codemods on a
+dirty tree, action a stale audit, or improvise rewrites for
+ambiguous audit findings. Per-framework variants supply the
+ecosystem-correct commands: `@next/codemod` for nextjs,
+`dotnet upgrade-assistant` for dotnet, `pyupgrade` +
+`django-upgrade` for python, `expo install --fix` vs
+`react-native upgrade` for react-native, `swift-migrate` +
+xcconfig-driven edits for swift, `terraform 0.13upgrade` +
+multi-platform `providers lock` for terraform; nestjs is mechanical-
+edit-heavy due to a thin codemod story. The collection now ships a
+complete three-stage pipeline matching `DependencyAudit/` and
+`DocsHygiene/`:
+`stack-upgrade-audit → stack-upgrade-fix → post-milestone-audit/-fix`.
+Catalog grew from 58 to 65 playbooks. Old `stack-upgrade-<framework>`
+slugs no longer dispatch — see the `Recent renames` table below.
+
+v1.5.0 added one collection and three playbooks. The new `SEOAudit/`
 collection ships `seo-audit` and `seo-fix` — a stack-agnostic SEO
 audit / fix pair for web apps. The audit detects the framework
 (Next.js App / Pages router, Nuxt, Remix, SvelteKit, Astro, Gatsby,
