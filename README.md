@@ -61,7 +61,7 @@ After `--install-global`, from any project:
 /playbook test-coverage-audit
 /playbook test-coverage-fix for the api routes
 /playbook dependency-audit
-/playbook stack-upgrade-nextjs
+/playbook stack-upgrade-audit-nextjs
 ```
 
 - **Discovery** — `/playbook --list` prints the full catalog with
@@ -310,24 +310,50 @@ a new one.
 
 ### `StackUpgrade/`
 
-Per-stack version-bump planners. Reads upstream release notes,
-scans the repo for affected patterns, surveys available codemods,
-and produces a risk-ranked migration plan. Pair with
-`MilestoneAudit/`'s `post-milestone-fix.prompt.md` to action the
-plan.
+Per-stack version-bump audit + fix pair. The audit reads upstream
+release notes, scans the repo for affected patterns, surveys
+codemods, and produces a risk-ranked migration plan. The fix
+companion runs the codemods serially, applies mechanical
+breaking-change edits, bumps the version pin with peer-dep
+co-bumps, verifies between each step, and hands off to
+`post-milestone-audit-<stack>` for residual drift.
 
-- `stack-upgrade.nextjs.prompt.md` — Next.js version bumps.
-- `stack-upgrade.nestjs.prompt.md` — NestJS major upgrades.
-- `stack-upgrade.python.prompt.md` — Python language version
+Audits:
+
+- `stack-upgrade-audit.nextjs.prompt.md` — Next.js version bumps.
+- `stack-upgrade-audit.nestjs.prompt.md` — NestJS major upgrades.
+- `stack-upgrade-audit.python.prompt.md` — Python language version
   (3.x → 3.y).
-- `stack-upgrade.dotnet.prompt.md` — .NET TFM (6 → 8, 8 → 9, …).
-- `stack-upgrade.react-native.prompt.md` — React Native / Expo
+- `stack-upgrade-audit.dotnet.prompt.md` — .NET TFM (6 → 8, 8 → 9, …).
+- `stack-upgrade-audit.react-native.prompt.md` — React Native / Expo
   SDK bumps.
-- `stack-upgrade.swift.prompt.md` — Swift / Xcode / iOS SDK.
-- `stack-upgrade.terraform.prompt.md` — Terraform / OpenTofu CLI
+- `stack-upgrade-audit.swift.prompt.md` — Swift / Xcode / iOS SDK.
+- `stack-upgrade-audit.terraform.prompt.md` — Terraform / OpenTofu CLI
   + major provider bumps.
-- `core/stack-upgrade.core.prompt.md` — shared scaffold (not
-  invoked directly).
+
+Fixes (`stack-upgrade-fix-<stack>`) action the audit's plan. Default
+scope is `codemods` + `version-bump` (the safest mechanical pieces);
+`mechanical-edits` and `post-bump` are opt-in. Verifies between
+categories, commits per category, local only.
+
+- `stack-upgrade-fix.nextjs.prompt.md`
+- `stack-upgrade-fix.nestjs.prompt.md`
+- `stack-upgrade-fix.python.prompt.md`
+- `stack-upgrade-fix.dotnet.prompt.md`
+- `stack-upgrade-fix.react-native.prompt.md`
+- `stack-upgrade-fix.swift.prompt.md`
+- `stack-upgrade-fix.terraform.prompt.md`
+
+Shared cores (`core/stack-upgrade-audit.core.prompt.md`,
+`core/stack-upgrade-fix.core.prompt.md`) hold the workflow shape,
+report format, and constraints. Not invoked directly.
+
+The three-stage pipeline:
+
+```
+stack-upgrade-audit  →  stack-upgrade-fix  →  post-milestone-audit / post-milestone-fix
+        plan                  execute                   drift cleanup
+```
 
 See [`StackUpgrade/README.md`](StackUpgrade/README.md).
 
@@ -700,3 +726,4 @@ saved invocations:
 | `doc-code-drift` | `doc-code-drift-audit` (plus new `doc-code-drift-fix`) |
 | `db-migration-review-*` family | `db-migration-audit-*` (plus new `db-migration-fix-*` family) |
 | `dependency-hygiene-*` family | `dependency-audit-*` (plus new `dependency-fix-*` family) |
+| `stack-upgrade-*` family | `stack-upgrade-audit-*` (plus new `stack-upgrade-fix-*` family) |
