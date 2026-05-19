@@ -1,6 +1,6 @@
 ---
 description: Plan a .NET TFM upgrade (e.g. .NET 6 → 8, 8 → 9) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [post-milestone-fix]
+related: [stack-upgrade-fix-dotnet]
 ---
 
 # Stack upgrade — .NET variant
@@ -8,7 +8,7 @@ related: [post-milestone-fix]
 Plan a .NET TFM (Target Framework Moniker) upgrade — e.g. .NET 6 →
 .NET 8, .NET 8 → .NET 9.
 
-**This prompt extends [`core/stack-upgrade.core.prompt.md`](./core/stack-upgrade.core.prompt.md).**
+**This prompt extends [`core/stack-upgrade-audit.core.prompt.md`](./core/stack-upgrade-audit.core.prompt.md).**
 Read the core first for the workflow shape (Steps 0–7, the report
 format, and the Constraints). This file supplies the .NET-specific
 detection commands, release-note sources, breaking-change

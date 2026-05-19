@@ -1,13 +1,13 @@
 ---
 description: Plan a Next.js version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [post-milestone-fix]
+related: [stack-upgrade-fix-nextjs]
 ---
 
 # Stack upgrade — Next.js variant
 
 Plan a Next.js version upgrade.
 
-**This prompt extends [`core/stack-upgrade.core.prompt.md`](./core/stack-upgrade.core.prompt.md).**
+**This prompt extends [`core/stack-upgrade-audit.core.prompt.md`](./core/stack-upgrade-audit.core.prompt.md).**
 Read the core first for the workflow shape (Steps 0–7, the report
 format, and the Constraints). This file supplies the Next.js-
 specific detection commands, release-note sources, breaking-change

@@ -202,24 +202,45 @@ generated from those sources by `tools/generate-adapters.py`.
 
 ## StackUpgrade
 
-- **`stack-upgrade-dotnet`** — Plan a .NET TFM upgrade (e.g. .NET 6 → 8, 8 → 9) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.dotnet.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-nestjs`** — Plan a NestJS major version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.nestjs.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-nextjs`** — Plan a Next.js version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.nextjs.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-python`** — Plan a Python language version upgrade (e.g. 3.10 → 3.12) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.python.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-react-native`** — Plan a React Native / Expo SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.react-native.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-swift`** — Plan a Swift / Xcode / iOS SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.swift.prompt.md`
-  Related: `post-milestone-fix`
-- **`stack-upgrade-terraform`** — Plan a Terraform / OpenTofu CLI or major provider upgrade (e.g. AWS provider 4 → 5) — read release notes, scan for patterns, produce a risk-ranked migration plan.
-  Path: `StackUpgrade/stack-upgrade.terraform.prompt.md`
-  Related: `post-milestone-fix`
+- **`stack-upgrade-audit-dotnet`** — Plan a .NET TFM upgrade (e.g. .NET 6 → 8, 8 → 9) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.dotnet.prompt.md`
+  Related: `stack-upgrade-fix-dotnet`
+- **`stack-upgrade-audit-nestjs`** — Plan a NestJS major version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.nestjs.prompt.md`
+  Related: `stack-upgrade-fix-nestjs`
+- **`stack-upgrade-audit-nextjs`** — Plan a Next.js version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.nextjs.prompt.md`
+  Related: `stack-upgrade-fix-nextjs`
+- **`stack-upgrade-audit-python`** — Plan a Python language version upgrade (e.g. 3.10 → 3.12) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.python.prompt.md`
+  Related: `stack-upgrade-fix-python`
+- **`stack-upgrade-audit-react-native`** — Plan a React Native / Expo SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.react-native.prompt.md`
+  Related: `stack-upgrade-fix-react-native`
+- **`stack-upgrade-audit-swift`** — Plan a Swift / Xcode / iOS SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.swift.prompt.md`
+  Related: `stack-upgrade-fix-swift`
+- **`stack-upgrade-audit-terraform`** — Plan a Terraform / OpenTofu CLI or major provider upgrade (e.g. AWS provider 4 → 5) — read release notes, scan for patterns, produce a risk-ranked migration plan.
+  Path: `StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
+  Related: `stack-upgrade-fix-terraform`
+- **`stack-upgrade-fix-dotnet`** — Action findings from stack-upgrade-audit-dotnet. Run dotnet upgrade-assistant where applicable, apply mechanical edits, bump TFM, verify build, commit per project. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.dotnet.prompt.md`
+  Related: `stack-upgrade-audit-dotnet`, `post-milestone-audit-dotnet`
+- **`stack-upgrade-fix-nestjs`** — Action findings from stack-upgrade-audit-nestjs. Apply mechanical breaking-change edits, bump @nestjs/* packages, verify build, commit per category. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.nestjs.prompt.md`
+  Related: `stack-upgrade-audit-nestjs`, `post-milestone-audit-nestjs`
+- **`stack-upgrade-fix-nextjs`** — Action findings from stack-upgrade-audit-nextjs. Run @next/codemod transforms per audit plan, bump next + react peer deps, verify build, commit per codemod. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.nextjs.prompt.md`
+  Related: `stack-upgrade-audit-nextjs`, `post-milestone-audit-nextjs`
+- **`stack-upgrade-fix-python`** — Action findings from stack-upgrade-audit-python. Run pyupgrade per target, apply mechanical edits, bump python version pin and deploy-target, verify, commit per category. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.python.prompt.md`
+  Related: `stack-upgrade-audit-python`, `post-milestone-audit-python`
+- **`stack-upgrade-fix-react-native`** — Action findings from stack-upgrade-audit-react-native. Run RN upgrade helper or Expo upgrade, apply mechanical edits, bump deps, verify build, commit per category. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.react-native.prompt.md`
+  Related: `stack-upgrade-audit-react-native`, `post-milestone-audit-react-native`
+- **`stack-upgrade-fix-swift`** — Action findings from stack-upgrade-audit-swift. Apply mechanical edits, bump Swift / iOS deployment target, run pod install, verify build, commit per category. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.swift.prompt.md`
+  Related: `stack-upgrade-audit-swift`, `post-milestone-audit-swift`
+- **`stack-upgrade-fix-terraform`** — Action findings from stack-upgrade-audit-terraform. Apply provider / module bumps, run terraform 0.13upgrade where applicable, plan, commit per category. Local only.
+  Path: `StackUpgrade/stack-upgrade-fix.terraform.prompt.md`
+  Related: `stack-upgrade-audit-terraform`, `post-milestone-audit-terraform`

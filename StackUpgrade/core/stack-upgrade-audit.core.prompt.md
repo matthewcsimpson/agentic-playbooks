@@ -42,8 +42,9 @@ The deliverable is `docs/upgrades/<stack>-<from>-<to>.md`.
 Do not perform the upgrade. Do not change `package.json`,
 `pyproject.toml`, `.csproj`, or any other manifest. Do not run
 codemods that mutate files (run them in dry-run / preview mode
-only). The user runs the upgrade deliberately, using this plan as
-a script.
+only). The user runs the upgrade deliberately — either by hand
+using this plan as a script, or by invoking the action companion
+`stack-upgrade-fix-<framework>` which consumes this report.
 
 ---
 

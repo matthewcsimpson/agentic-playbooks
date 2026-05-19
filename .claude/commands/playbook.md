@@ -290,30 +290,58 @@ Variants:
   File: `../../MilestoneSmoke/post-milestone-smoke-test.web.prompt.md`
   Detect: usage context — ask the user which variant applies.
 
-### `stack-upgrade`
+### `stack-upgrade-audit`
 
 Variants:
 
-- `stack-upgrade-dotnet` — .NET / C#
-  File: `../../StackUpgrade/stack-upgrade.dotnet.prompt.md`
+- `stack-upgrade-audit-dotnet` — .NET / C#
+  File: `../../StackUpgrade/stack-upgrade-audit.dotnet.prompt.md`
   Detect: `*.csproj`, `*.sln`, `global.json`, `Directory.Packages.props`
-- `stack-upgrade-nestjs` — NestJS backend
-  File: `../../StackUpgrade/stack-upgrade.nestjs.prompt.md`
+- `stack-upgrade-audit-nestjs` — NestJS backend
+  File: `../../StackUpgrade/stack-upgrade-audit.nestjs.prompt.md`
   Detect: `nest-cli.json` or `@nestjs/core` in `package.json`
-- `stack-upgrade-nextjs` — Next.js
-  File: `../../StackUpgrade/stack-upgrade.nextjs.prompt.md`
+- `stack-upgrade-audit-nextjs` — Next.js
+  File: `../../StackUpgrade/stack-upgrade-audit.nextjs.prompt.md`
   Detect: `next.config.{js,ts,mjs}` or `next` in `package.json`
-- `stack-upgrade-python` — Python
-  File: `../../StackUpgrade/stack-upgrade.python.prompt.md`
+- `stack-upgrade-audit-python` — Python
+  File: `../../StackUpgrade/stack-upgrade-audit.python.prompt.md`
   Detect: `pyproject.toml`, `requirements.txt`, `Pipfile`, `setup.py`
-- `stack-upgrade-react-native` — React Native / Expo
-  File: `../../StackUpgrade/stack-upgrade.react-native.prompt.md`
+- `stack-upgrade-audit-react-native` — React Native / Expo
+  File: `../../StackUpgrade/stack-upgrade-audit.react-native.prompt.md`
   Detect: `app.json` with Expo/RN config, or `react-native` / `expo` in `package.json`
-- `stack-upgrade-swift` — Swift / iOS / macOS
-  File: `../../StackUpgrade/stack-upgrade.swift.prompt.md`
+- `stack-upgrade-audit-swift` — Swift / iOS / macOS
+  File: `../../StackUpgrade/stack-upgrade-audit.swift.prompt.md`
   Detect: `Package.swift`, `*.xcodeproj/`, `*.xcworkspace/`
-- `stack-upgrade-terraform` — Terraform / OpenTofu
-  File: `../../StackUpgrade/stack-upgrade.terraform.prompt.md`
+- `stack-upgrade-audit-terraform` — Terraform / OpenTofu
+  File: `../../StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
 
-Related across the family: `post-milestone-fix`
+Related across the family: `stack-upgrade-fix-dotnet`
+
+### `stack-upgrade-fix`
+
+Variants:
+
+- `stack-upgrade-fix-dotnet` — .NET / C#
+  File: `../../StackUpgrade/stack-upgrade-fix.dotnet.prompt.md`
+  Detect: `*.csproj`, `*.sln`, `global.json`, `Directory.Packages.props`
+- `stack-upgrade-fix-nestjs` — NestJS backend
+  File: `../../StackUpgrade/stack-upgrade-fix.nestjs.prompt.md`
+  Detect: `nest-cli.json` or `@nestjs/core` in `package.json`
+- `stack-upgrade-fix-nextjs` — Next.js
+  File: `../../StackUpgrade/stack-upgrade-fix.nextjs.prompt.md`
+  Detect: `next.config.{js,ts,mjs}` or `next` in `package.json`
+- `stack-upgrade-fix-python` — Python
+  File: `../../StackUpgrade/stack-upgrade-fix.python.prompt.md`
+  Detect: `pyproject.toml`, `requirements.txt`, `Pipfile`, `setup.py`
+- `stack-upgrade-fix-react-native` — React Native / Expo
+  File: `../../StackUpgrade/stack-upgrade-fix.react-native.prompt.md`
+  Detect: `app.json` with Expo/RN config, or `react-native` / `expo` in `package.json`
+- `stack-upgrade-fix-swift` — Swift / iOS / macOS
+  File: `../../StackUpgrade/stack-upgrade-fix.swift.prompt.md`
+  Detect: `Package.swift`, `*.xcodeproj/`, `*.xcworkspace/`
+- `stack-upgrade-fix-terraform` — Terraform / OpenTofu
+  File: `../../StackUpgrade/stack-upgrade-fix.terraform.prompt.md`
+  Detect: `*.tf`, `*.tofu`
+
+Related across the family: `stack-upgrade-audit-dotnet`, `post-milestone-audit-dotnet`

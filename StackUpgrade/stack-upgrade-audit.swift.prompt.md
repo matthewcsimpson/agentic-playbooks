@@ -1,6 +1,6 @@
 ---
 description: Plan a Swift / Xcode / iOS SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [post-milestone-fix]
+related: [stack-upgrade-fix-swift]
 ---
 
 # Stack upgrade — Swift / Xcode variant
@@ -8,7 +8,7 @@ related: [post-milestone-fix]
 Plan a Swift language version, Xcode version, or iOS / macOS SDK
 upgrade.
 
-**This prompt extends [`core/stack-upgrade.core.prompt.md`](./core/stack-upgrade.core.prompt.md).**
+**This prompt extends [`core/stack-upgrade-audit.core.prompt.md`](./core/stack-upgrade-audit.core.prompt.md).**
 Read the core first for the workflow shape (Steps 0–7, the report
 format, and the Constraints). This file supplies the Swift-
 specific detection commands, release-note sources, breaking-change
