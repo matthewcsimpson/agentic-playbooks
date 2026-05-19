@@ -73,11 +73,19 @@ If the user hasn't specified scope, ask. Mode defaults to `auto`.
 
 ## Step 1 — Locate the audit
 
-The audit usually goes to the PR conversation, but may be written to
-`docs/audits/migrations/<migration-id>.md` if the project tracks them.
-Ask the user where the audit lives. If they don't have one, stop and
-recommend running the matching `/playbook db-migration-audit-<orm>`
-first.
+The audit usually goes to the PR conversation, but may be written
+to a file if the project tracks them. Path:
+
+- New convention: `<root>/migrations/<migration-id>.md` where
+  `<root>` = `.playbook-audits/`.
+- Legacy convention: `<root>/audits/migrations/<migration-id>.md`
+  where `<root>` = `docs/`.
+
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/audits/` exists (legacy convention). Ask
+the user where the audit lives. If they don't have one, stop and
+recommend running the matching
+`/playbook db-migration-audit-<orm>` first.
 
 If the audit is in chat, ask the user to paste it.
 

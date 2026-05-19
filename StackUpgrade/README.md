@@ -134,9 +134,16 @@ capability set should work.
 
 ## Output discipline
 
-The audit writes to `docs/upgrades/<stack>-<from>-<to>.md`. The
-`docs/` folder should be gitignored — these are working artefacts,
-not tracked history. Re-runs overwrite the file in place.
+The audit writes to
+`<root>/upgrades/<stack>-<from>-<to>-<timestamp>.md` (e.g.
+`.playbook-audits/upgrades/nextjs-14-15-20260519T143022.md`).
+`<root>` resolves in this order: `.playbook-audits/` if it
+exists, else `docs/` if `docs/upgrades/` exists (legacy
+convention), else the audit creates `.playbook-audits/` and
+appends it to `.gitignore` on first use. Each run produces a new
+file so re-auditing the same upgrade path accumulates an ordered
+history; the fix prompt picks the most recent for that
+`<stack>-<from>-<to>` prefix.
 
 The fix prompt reads that file, actions per category with a
 verify-and-commit gate between categories, and writes its own

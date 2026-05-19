@@ -44,9 +44,14 @@ on the wiki clone, regardless of `gh` auth state.
 
 ## §1 — Locate the audit (GitHub specifics)
 
-Look for **`docs/audits/planning-doc-drift.github-wiki.md`** in
-the main repo. If multiple timestamped reports exist, use the
-most recent unless the user names one.
+Resolve `<root>` in this order: `.playbook-audits/` if it exists
+in the main repo, else `docs/` if `docs/audits/` exists (legacy
+convention). Look for files matching
+**`<root>/audits/planning-doc-drift.github-wiki-*.md`** and pick
+the most recent
+(`ls -1 <root>/audits/planning-doc-drift.github-wiki-*.md 2>/dev/null | sort | tail -1`
+— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically), unless
+the user names one explicitly.
 
 If no report exists, stop and recommend:
 

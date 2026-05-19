@@ -147,7 +147,7 @@ confirm the expected DOM state before the next.
 
 **Capture an artefact**: a screenshot at the moment of decision
 (success state for pass, last-good-state for fail / blocked).
-Save under `docs/smoke-tests/screenshots/<tag>/<flow-number>.png`
+Save under `<root>/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png`
 and link from the report.
 
 ---
@@ -175,4 +175,4 @@ In the per-flow report block, fill in:
 - **Observations**:
   - Console: <empty | "1 new error: …" | etc.>
   - Network: <empty | "POST /api/foo returned 500" | etc.>
-- **Artefact**: `docs/smoke-tests/screenshots/<tag>/<flow-number>.png`
+- **Artefact**: `<root>/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png`

@@ -77,12 +77,19 @@ guess scope. The audit is the survey; the fix should be deliberate.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `docs/audits/dependencies.md`. Look for the file
-first; if no report exists there, ask the user whether they have an
-inline report to paste, or whether they need to run the audit.
+The audit writes to `<root>/audits/dependencies-<timestamp>.md`.
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/audits/` exists (legacy convention). Look
+for files matching `<root>/audits/dependencies-*.md` and pick the
+most recent
+(`ls -1 <root>/audits/dependencies-*.md 2>/dev/null | sort | tail -1`
+— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
+neither root exists or no report is found, ask the user whether
+they have an inline report to paste, or whether they need to run
+the audit.
 
-If multiple reports exist (timestamped), use the most recent unless
-the user named one explicitly.
+If the user named a specific report file, use that one instead of the
+most recent.
 
 If neither a file nor an inline report is available, stop and
 recommend running the matching `/playbook dependency-audit-<ecosystem>`

@@ -99,9 +99,14 @@ capability set should work.
 
 ## Output discipline
 
-The audit writes to `docs/audits/seo.md`. The `docs/audits/` folder
-should be gitignored — these are working artefacts, not tracked
-history. Re-runs overwrite the file in place.
+The audit writes to `<root>/audits/seo-<timestamp>.md` (e.g.
+`.playbook-audits/audits/seo-20260519T143022.md`). `<root>`
+resolves in this order: `.playbook-audits/` if it exists, else
+`docs/` if `docs/audits/` exists (legacy convention), else the
+audit creates `.playbook-audits/` and appends it to `.gitignore`
+on first use. Each run produces a new file so the directory
+accumulates an ordered history; the fix prompt picks the most
+recent.
 
 The fix prompt reads that file, actions per category with a verify-
 and-commit gate between categories, and writes its own summary to the

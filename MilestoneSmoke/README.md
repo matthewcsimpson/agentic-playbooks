@@ -22,8 +22,10 @@ shared scaffold lives in `core/`.
 
 1. Tag the milestone (`git tag v0.x.y && git push --tags`).
 2. Run the **smoke variant** that matches your project's runtime
-   surface — produces `docs/smoke-tests/<tag>.md` and any
-   artefacts under `docs/smoke-tests/<tag>/`.
+   surface — produces `<root>/smoke-tests/<tag>-<timestamp>.md`
+   and any artefacts under
+   `<root>/smoke-tests/<tag>-<timestamp>/` (default `<root>` is
+   `.playbook-audits/`).
 3. If the smoke report has ❌ Fail entries, run
    `post-milestone-smoke-fix.prompt.md` to action the regressions
    you want fixed in this cycle. Then re-run the smoke variant to
@@ -82,13 +84,21 @@ afterwards.
 
 Each variant writes:
 
-- A single markdown report at `docs/smoke-tests/<tag>.md`.
+- A single markdown report at
+  `<root>/smoke-tests/<tag>-<timestamp>.md` (e.g.
+  `.playbook-audits/smoke-tests/v1.6.0-20260519T143022.md`).
 - Variant-specific artefacts (screenshots, response logs, command
-  transcripts) under `docs/smoke-tests/<tag>/` or similar paths
-  the variant specifies.
+  transcripts) under `<root>/smoke-tests/<tag>-<timestamp>/` or
+  similar paths the variant specifies, scoped to the run's
+  timestamp.
 
-The `docs/` folder should be gitignored. These are working
-artefacts.
+`<root>` resolves in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/smoke-tests/` exists (legacy convention),
+else the smoke test creates `.playbook-audits/` and appends it to
+`.gitignore` on first use. Each run produces a new report +
+artefact folder so re-running for the same tag accumulates an
+ordered history instead of overwriting; the fix prompt picks the
+most recent.
 
 ## Required tool capabilities
 

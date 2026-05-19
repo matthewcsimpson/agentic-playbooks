@@ -315,7 +315,20 @@ endpoints.
 
 ## Step 8 — Report
 
-Output to `docs/audits/observability.md`. Structure:
+Output to `<root>/audits/observability-<timestamp>.md`, where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/` if `docs/audits/` exists (legacy
+  convention), else create `.playbook-audits/` and append
+  `.playbook-audits/` to `.gitignore` (creating `.gitignore` if
+  absent — these are working artefacts, not tracked history).
+  Create `<root>/audits/` if it doesn't exist.
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs — the
+directory is an ordered history. Structure:
 
 ```
 # Observability audit

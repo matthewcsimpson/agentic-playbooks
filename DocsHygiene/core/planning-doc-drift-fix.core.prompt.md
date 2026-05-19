@@ -173,7 +173,8 @@ docs: log planning-doc-drift fix run <YYYY-MM-DD>
 
 Three persistence layers, each serves a different reader:
 
-- **The audit report** in the main repo's `docs/audits/` is the
+- **The audit report** in the main repo's
+  `.playbook-audits/audits/` (or legacy `docs/audits/`) is the
   bookkeeping for the *next* audit run (diff against prior).
 - **The commit history** in the doc system is the reviewable
   trail per category.

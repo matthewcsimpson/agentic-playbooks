@@ -88,15 +88,21 @@ especially for major-version upgrades.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `docs/upgrades/<stack>-<from>-<to>.md`. Look for
-the file first; if no report exists there, ask the user whether they
-have an inline report to paste, or whether they need to run the
-audit.
+The audit writes to
+`<root>/upgrades/<stack>-<from>-<to>-<timestamp>.md`. Resolve
+`<root>` in this order: `.playbook-audits/` if it exists, else
+`docs/` if `docs/upgrades/` exists (legacy convention). Look for
+files matching the user's stated `<stack>-<from>-<to>` prefix and
+pick the most recent
+(`ls -1 <root>/upgrades/<stack>-<from>-<to>-*.md 2>/dev/null | sort | tail -1`
+— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
+neither root exists or no report is found, ask the user whether
+they have an inline report to paste, or whether they need to run
+the audit.
 
-If multiple reports exist (different upgrade paths from different
-runs), use the one matching the user's stated `<from>` and `<to>`.
-If still ambiguous, ask before proceeding — running the wrong fix
-against the wrong plan is much worse than asking.
+If multiple `<from>`/`<to>` pairs exist for the same stack and the
+user hasn't disambiguated, ask before proceeding — running the
+wrong fix against the wrong plan is much worse than asking.
 
 If neither a file nor an inline report is available, stop and
 recommend running `/playbook stack-upgrade-audit-<framework>` first.

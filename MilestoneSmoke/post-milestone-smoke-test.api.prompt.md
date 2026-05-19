@@ -164,7 +164,7 @@ record where it failed and stop the flow.
 
 **Capture an artefact**: a `.txt` or `.json` file containing the
 full request / response trace for the flow. Save under
-`docs/smoke-tests/<tag>/<flow-number>.log` and link from the
+`<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log` and link from the
 report.
 
 ---
@@ -201,4 +201,4 @@ In the per-flow report block, fill in:
   - Status codes: <list per step, e.g. "201, 200, 200">
   - Slow responses: <"none" | "GET /api/foo took 2.4s">
   - Server log findings: <"none" | "1 new error: ...">
-- **Artefact**: `docs/smoke-tests/<tag>/<flow-number>.log`
+- **Artefact**: `<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log`
