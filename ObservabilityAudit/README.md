@@ -14,7 +14,7 @@ uses.
 | Prompt | Scope |
 |---|---|
 | `observability-audit.prompt.md` | Read-only audit. Errors, logging, tracing, metrics, health, sensitive data. One audit, one report. |
-| `observability-fix.prompt.md` | Actions findings from the audit. Redacts sensitive data, corrects log levels, repairs swallowed errors, propagates correlation IDs, instruments outbound calls, tightens health checks. Default scope is `sensitive-data` + `log-levels`; everything else is opt-in because it changes runtime behaviour. Commits per category. Does not push. |
+| `observability-fix.prompt.md` | Actions findings from the audit. Redacts sensitive data, corrects log levels, tightens health checks, repairs swallowed errors, propagates correlation IDs, instruments outbound calls. Default scope is `sensitive-data` + `log-levels` + `health-checks`; `error-handling`, `correlation`, `tracing`, and `metrics` are opt-in. Commits per category. Does not push. |
 
 ## What the audit looks for
 
@@ -45,10 +45,17 @@ The fix prompt's categories map onto the audit's sections:
   — that's a design decision.
 - `log-levels` (default) — correct obvious level mismatches;
   convert string-interpolated log calls to structured.
-- `error-handling` (opt-in) — log-and-rethrow in empty catches
-  the audit marked as bugs; preserve cause chain in generic
-  re-throws; add `.catch` on dangling promise chains. Judgment-
-  heavy sites surface as TODOs rather than auto-applying.
+- `health-checks` (default) — add real downstream-dependency
+  checks; split liveness from readiness; update orchestrator
+  manifests that reference the endpoints. In the default scope
+  because a dishonest health check is the same severity class as a
+  swallowed error and the audit's findings are mechanical to apply.
+- `error-handling` (opt-in) — preserve cause chain in generic
+  re-throws; add `.catch` on dangling promise chains. Empty
+  catches and log-and-swallow sites stop and ask by default — the
+  decision shape (log-only / log + rethrow / log + return-failure)
+  is behavioural and belongs with the human; auto-apply only when
+  the audit's recommendation for the specific site is unambiguous.
 - `correlation` (opt-in) — swap bare-logger imports for the
   project's request-scoped logger; propagate context across async
   boundaries when the project has a context utility. Does **not**
@@ -58,9 +65,6 @@ The fix prompt's categories map onto the audit's sections:
   OpenTelemetry auto-instrumentation where it's already wired.
 - `metrics` (opt-in) — drop high-cardinality tags, rename for
   convention. Does **not** add new metrics — that's design.
-- `health-checks` (opt-in) — add real downstream-dependency
-  checks; split liveness from readiness; update orchestrator
-  manifests that reference the endpoints.
 
 Sensitive-data fixes always commit ahead of every other category
 so the security-relevant changes are distinguishable in the git

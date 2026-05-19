@@ -167,7 +167,7 @@ generated from those sources by `tools/generate-adapters.py`.
 - **`observability-audit`** — Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
   Path: `ObservabilityAudit/observability-audit.prompt.md`
   Related: `observability-fix`
-- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, add correlation gaps. Verify build, commit per category. Local only.
+- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, propagate correlation IDs. Verify build, commit per category. Local only.
   Path: `ObservabilityAudit/observability-fix.prompt.md`
   Related: `observability-audit`
 

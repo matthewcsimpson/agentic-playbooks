@@ -1,5 +1,5 @@
 ---
-description: Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, add correlation gaps. Verify build, commit per category. Local only.
+description: Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, propagate correlation IDs. Verify build, commit per category. Local only.
 related: [observability-audit]
 ---
 
@@ -64,10 +64,19 @@ The user supplies:
   - `health-checks` — convert shallow health checks to check real
     downstream dependencies; split liveness from readiness.
 
-  Default scope is `sensitive-data` + `log-levels`. Everything else
-  requires explicit opt-in — `error-handling`, `correlation`,
-  `tracing`, `metrics`, and `health-checks` all change runtime
+  Default scope is `sensitive-data` + `log-levels` + `health-checks`.
+  Everything else requires explicit opt-in — `error-handling`,
+  `correlation`, `tracing`, and `metrics` all change runtime
   behaviour in ways that need a deliberate decision.
+
+  `health-checks` is in the default scope because a dishonest health
+  check (returns 200 while the DB is down) is the same severity
+  class as a swallowed error and the fix is mechanical given the
+  audit's findings — add a downstream-dependency check, split
+  liveness from readiness. The blast radius is real (orchestrators
+  consume the endpoint and may restart pods) but bounded; the fix
+  prompt's Step 8 guards against breaking the orchestrator probe by
+  requiring manifest updates when endpoint names change.
 
 - **Excluded paths** — optional, comma-separated list of file globs
   or directories to skip even within an in-scope category. Use for
@@ -160,6 +169,17 @@ list**:
 - Read the existing redaction config to find its shape — don't
   scaffold a new one.
 
+**Wildcard semantics matter for path-style redactors.** Pino's
+`redact: ['password']` does **not** redact `body.user.password` —
+only top-level `password` keys. Use `'*.password'` to match any
+object's `password` key at the first level, `'**.password'` for
+deep wildcards (where supported by the version in use), or specific
+paths like `'body.user.password'`. After adding a pattern, run the
+affected log call locally (or in a unit test) and confirm the
+redacted output before committing — a pattern that doesn't match
+ships as a silent leak. Other SDKs have similar gotchas; check the
+SDK's redaction docs for path syntax before adding.
+
 **No redaction middleware exists at all**:
 
 - This is bigger than a fix pass. Surface as a recommendation in
@@ -225,27 +245,38 @@ the mechanical cases, surface the rest as TODOs.
 
 **Empty catch blocks**:
 
-- If the surrounding code suggests the catch is *defensive cleanup*
-  (e.g. wrapping a cleanup function that shouldn't bring down the
-  main flow), add a `logger.warn("cleanup failed", { error: e })`
-  and leave the catch otherwise empty. The error is now visible
-  without changing behaviour.
-- If the catch is on a code path where downstream callers are
-  silently receiving success despite a failure, **stop and ask**.
-  Turning a silent swallow into a re-throw can break callers that
-  relied on the broken-but-quiet behaviour. The decision belongs
-  with the human.
-- If the audit specifically marked the empty catch as a bug (the
-  function should have propagated the failure), apply the fix —
-  add the `logger.error` *and* a `throw e` (or framework-equivalent
-  failure return). One commit per fix; verify between.
+The decision shape — log only, log + rethrow, log + return failure
+result, leave alone — depends on whether downstream callers should
+see the failure. That's a behavioural decision; the fix prompt
+doesn't make it.
+
+- **Default: stop and ask.** For every empty catch the audit
+  flagged, surface the finding with the file path and the
+  surrounding function's signature, and ask the user which shape to
+  apply (log-only / log + rethrow / log + return-failure / leave).
+  Group similar catches and ask once per group.
+- **Auto-apply path:** only when the audit's recommendation for the
+  specific catch is unambiguous — i.e. the audit text literally
+  specifies "add log + rethrow" or "add log + return failure
+  result" for that site. In that case, apply the specified shape:
+  add the `logger.error("<context>", { error: e })` plus the
+  failure-propagation form. One commit per fix; verify between.
+- **Never auto-apply a silent `logger.warn`-only fix.** Turning a
+  silent swallow into a quietly-logged swallow is a real change
+  (downstream still sees success, but on-call now gets noise) and
+  needs the same deliberation as a rethrow.
 
 **Log-and-swallow**:
 
-- Same shape as empty catch. The mechanical fix is to add a
-  `throw e` (or return a failure result) after the existing log
-  call. Judgment call per site — surface as TODO unless the audit
-  marked it as a bug.
+Same shape as empty catch. The catch already logs, so the question
+is only "should this also propagate the failure?" That's still a
+behavioural decision.
+
+- **Default: stop and ask.** Group similar sites; ask once per
+  group whether to add `throw e` / `return failureResult` after the
+  existing log call.
+- **Auto-apply path:** only when the audit explicitly recommends
+  propagating the failure for that specific site.
 
 **Generic re-throws (`throw new Error(e.message)`)**:
 

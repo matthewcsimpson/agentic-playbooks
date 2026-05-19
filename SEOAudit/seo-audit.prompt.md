@@ -384,7 +384,13 @@ For each page template:
 
 ```sh
 grep -rnE '<img[^>]*' --include='*.html' --include='*.tsx' --include='*.jsx' --include='*.vue' --include='*.svelte' --include='*.astro' .
-grep -rnE '<Image[^>]*' --include='*.tsx' --include='*.jsx' .            # next/image, similar
+
+# Framework Image components — broaden to match the detected framework:
+#   next/image            → <Image …>           in *.tsx / *.jsx
+#   nuxt/image            → <NuxtImg …>          in *.vue
+#   svelte enhanced:img   → <enhanced:img …>     in *.svelte
+#   astro                 → <Image …>            in *.astro
+grep -rnE '<(Image|NuxtImg|enhanced:img)[^>]*' --include='*.tsx' --include='*.jsx' --include='*.vue' --include='*.svelte' --include='*.astro' .
 ```
 
 For each image element:
@@ -451,7 +457,7 @@ grep -rnE '<script[^>]*src=[^>]*>' . | grep -vE 'async|defer|type="module"'
 grep -rnE 'fonts\.googleapis\.com|fonts\.gstatic\.com' .
 
 # Whole-library imports
-grep -rnE 'from\s+["'\'']lodash["'\'']|from\s+["'\'']moment["'\''])' .
+grep -rnE 'from\s+["'\'']lodash["'\'']|from\s+["'\'']moment["'\'']' .
 ```
 
 Findings:

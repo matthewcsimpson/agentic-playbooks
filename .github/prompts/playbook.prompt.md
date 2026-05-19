@@ -103,7 +103,7 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
 - **`observability-audit`** — Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
   File: `../../ObservabilityAudit/observability-audit.prompt.md`
   Related: `observability-fix`
-- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, add correlation gaps. Verify build, commit per category. Local only.
+- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, propagate correlation IDs. Verify build, commit per category. Local only.
   File: `../../ObservabilityAudit/observability-fix.prompt.md`
   Related: `observability-audit`
 - **`post-milestone-fix`** — Action the in-scope findings from the most recent post-milestone audit report. Commits locally; does not push or open a PR.

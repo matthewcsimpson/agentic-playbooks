@@ -202,12 +202,19 @@ external config" with a one-line note on where to look.
 ## Step 4 — Action `metadata`
 
 For each route with missing metadata, add the framework's
-declaration:
+declaration.
+
+**Next.js note** — all Next.js `Metadata`-typed examples in this and
+following steps assume `import type { Metadata } from 'next';` at
+the top of the file. Add the import when introducing the typed
+declaration into a file that doesn't already have it.
 
 **Next.js (App Router)** — add or extend `export const metadata` (or
 `generateMetadata` for dynamic):
 
 ```ts
+import type { Metadata } from 'next';
+
 export const metadata: Metadata = {
   title: '<Page-specific title> | <Site name>',
   description: '<70-160 chars>',

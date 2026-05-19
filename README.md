@@ -463,10 +463,12 @@ logs, dishonest health checks) are universal.
 
 - `observability-audit.prompt.md` — single stack-agnostic audit.
 - `observability-fix.prompt.md` — actions audit findings. Default
-  scope is `sensitive-data` + `log-levels` (mechanical, low blast
-  radius); `error-handling`, `correlation`, `tracing`, `metrics`,
-  and `health-checks` are opt-in because they change runtime
-  behaviour. Sensitive-data fixes always commit ahead of other
+  scope is `sensitive-data` + `log-levels` + `health-checks`
+  (mechanical, low blast radius); `error-handling`, `correlation`,
+  `tracing`, and `metrics` are opt-in because they change runtime
+  behaviour. Empty catches stop-and-ask by default — the
+  log-only / log + rethrow / log + return-failure decision is
+  behavioural. Sensitive-data fixes always commit ahead of other
   categories. Commits per category. Does not push.
 
 See [`ObservabilityAudit/README.md`](ObservabilityAudit/README.md).
