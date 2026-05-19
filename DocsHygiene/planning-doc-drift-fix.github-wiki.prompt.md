@@ -44,10 +44,12 @@ on the wiki clone, regardless of `gh` auth state.
 
 ## §1 — Locate the audit (GitHub specifics)
 
-Look for files matching
-**`docs/audits/planning-doc-drift.github-wiki-*.md`** in the main
-repo and pick the most recent
-(`ls -1 docs/audits/planning-doc-drift.github-wiki-*.md 2>/dev/null | sort | tail -1`
+Resolve `<root>` in this order: `.playbook-audits/` if it exists
+in the main repo, else `docs/audits/` if that exists (legacy
+convention). Look for files matching
+**`<root>/planning-doc-drift.github-wiki-*.md`** and pick the
+most recent
+(`ls -1 <root>/planning-doc-drift.github-wiki-*.md 2>/dev/null | sort | tail -1`
 — the `YYYYMMDDTHHMMSS` suffix sorts lexicographically), unless
 the user names one explicitly.
 

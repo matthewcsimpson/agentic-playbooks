@@ -79,14 +79,16 @@ guess scope.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `docs/audits/agent-instructions-<timestamp>.md`
-when the project has a `docs/` directory, and inline otherwise.
-Look for files matching `docs/audits/agent-instructions-*.md` and
-pick the most recent
-(`ls -1 docs/audits/agent-instructions-*.md 2>/dev/null | sort | tail -1`
-— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If no
-report exists there, ask the user whether they have an inline
-report to paste, or whether they need to run the audit.
+The audit writes to `<root>/agent-instructions-<timestamp>.md`.
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/audits/` if that exists (legacy convention). Look for
+files matching `<root>/agent-instructions-*.md` and pick the most
+recent
+(`ls -1 <root>/agent-instructions-*.md 2>/dev/null | sort | tail -1`
+— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
+neither root exists or no report is found, ask the user whether
+they have an inline report to paste, or whether they need to run
+the audit.
 
 If the user named a specific report file, use that one instead of the
 most recent.

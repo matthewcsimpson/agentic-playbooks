@@ -207,11 +207,11 @@ state for pass, last-good-state for fail / blocked):
 
 ```bash
 xcrun simctl io booted screenshot \
-  docs/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png
+  <root>/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png
 ```
 
 Save both the screenshot and the trimmed device log
-(`docs/smoke-tests/<tag>-<timestamp>/<flow-number>.log`).
+(`<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log`).
 
 ---
 
@@ -258,5 +258,5 @@ In the per-flow report block, fill in:
   - Crash report: <"none" | "matched .ips file at …">
   - Driver result: <"pass" | "fail: assertion at step 3 — selector not found">
 - **Artefact**:
-  - Screenshot: `docs/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png`
-  - Log: `docs/smoke-tests/<tag>-<timestamp>/<flow-number>.log`
+  - Screenshot: `<root>/smoke-tests/screenshots/<tag>-<timestamp>/<flow-number>.png`
+  - Log: `<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log`

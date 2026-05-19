@@ -166,7 +166,7 @@ including the captured stdout / stderr, and stop the flow.
 **Capture an artefact**: a `.log` file containing the command,
 working directory, exit code, full stdout, full stderr, and a
 listing of files changed. Save under
-`docs/smoke-tests/<tag>-<timestamp>/<flow-number>.log` and link from the
+`<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log` and link from the
 report.
 
 ---
@@ -210,4 +210,4 @@ In the per-flow report block, fill in:
   - Exit codes: <list per step, e.g. "0, 0, 0">
   - Stderr: <"empty" | "1 new warning: ..." | etc.>
   - Side-effects: <"as expected" | "unexpected file created at X">
-- **Artefact**: `docs/smoke-tests/<tag>-<timestamp>/<flow-number>.log`
+- **Artefact**: `<root>/smoke-tests/<tag>-<timestamp>/<flow-number>.log`

@@ -28,7 +28,7 @@ the top of this folder; the shared scaffold lives in `core/`.
    [`MilestoneSmoke/`](../MilestoneSmoke/) to catch behavioural
    regressions first.
 3. Run the **audit variant** that matches your stack — produces
-   `docs/audits/<tag>-<timestamp>.md`.
+   `<root>/<tag>-<timestamp>.md` (default `.playbook-audits/`).
 4. Triage the audit (override the `Suggested:` labels where
    needed).
 5. Run **fix** with the labels and sections you want actioned.
@@ -82,14 +82,16 @@ both.
 
 ## Output discipline
 
-The audit writes to `docs/audits/<tag>-<timestamp>.md` (e.g.
-`docs/audits/v1.6.0-20260519T143022.md`). Each run produces a new
-file so re-auditing the same tag accumulates an ordered history
-instead of overwriting; the fix prompt picks the most recent. The
-`docs/` folder should be gitignored — these are working artefacts,
-not tracked history. The audit uses prior reports to compute a
-delta, so keeping them locally matters, but committing them
-invites churn.
+The audit writes to `<root>/<tag>-<timestamp>.md` (e.g.
+`.playbook-audits/v1.6.0-20260519T143022.md`). `<root>` resolves
+in this order: `.playbook-audits/` if it exists, else
+`docs/audits/` if that exists (legacy convention), else the audit
+creates `.playbook-audits/` and appends it to `.gitignore` on
+first use. Each run produces a new file so re-auditing the same
+tag accumulates an ordered history instead of overwriting; the
+fix prompt picks the most recent. The audit uses prior reports
+to compute a delta, so keeping them locally matters, but
+committing them invites churn (the auto-gitignore prevents this).
 
 ## Required tool capabilities
 

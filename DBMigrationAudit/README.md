@@ -120,9 +120,10 @@ capability set should work.
 ## Output discipline
 
 The audit's report goes to the PR / commit conversation or to
-`docs/audits/migrations/<migration-id>.md`. It does not write to
-disk by default — migration audits are point-in-time artefacts and
-don't benefit from a tracked history.
+`<root>/migrations/<migration-id>.md` (default `<root>` is
+`.playbook-audits/`; `docs/audits/` is honored as legacy). It does
+not write to disk by default — migration audits are point-in-time
+artefacts and don't benefit from a tracked history.
 
 The fix produces local commits, one per migration touched.
 

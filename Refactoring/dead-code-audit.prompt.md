@@ -110,12 +110,19 @@ For each finding:
 
 ## Step 4 — Report
 
-Output to `docs/audits/dead-code-<timestamp>.md` (or inline if
-`docs/` isn't configured), where `<timestamp>` is current UTC time
-in basic ISO 8601 format `YYYYMMDDTHHMMSS` — generate with
-`date -u +%Y%m%dT%H%M%S` (e.g. `20260519T143022`). Always write a
-new file; do not overwrite prior runs — the directory is an
-ordered history. Structure:
+Output to `<root>/dead-code-<timestamp>.md`, where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/audits/` if that exists (legacy convention),
+  else create `.playbook-audits/` and append `.playbook-audits/`
+  to `.gitignore` (creating `.gitignore` if absent — these are
+  working artefacts, not tracked history).
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs — the
+directory is an ordered history. Structure:
 
 ```
 # Dead code audit

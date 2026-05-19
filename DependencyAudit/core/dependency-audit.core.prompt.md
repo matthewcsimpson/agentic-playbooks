@@ -37,7 +37,7 @@ audit consolidates them into a single pass with one prioritised report
 — a transitive CVE on a leaf dep can outrank a major-behind core lib
 instead of living in a separate terminal window.
 
-The deliverable is `docs/audits/dependencies-<timestamp>.md` (see
+The deliverable is `<root>/dependencies-<timestamp>.md` (see
 Step 7). Do not modify any manifest, lockfile, or installed dep —
 investigate and report only.
 
@@ -184,11 +184,19 @@ duplicates cause runtime bugs, not just bundle bloat.
 
 ## Step 7 — Report
 
-Write to `docs/audits/dependencies-<timestamp>.md`, where
-`<timestamp>` is current UTC time in basic ISO 8601 format
-`YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S` (e.g.
-`20260519T143022`). Always write a new file; do not overwrite prior
-runs — the directory is an ordered history. Structure:
+Write to `<root>/dependencies-<timestamp>.md`, where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/audits/` if that exists (legacy convention),
+  else create `.playbook-audits/` and append `.playbook-audits/`
+  to `.gitignore` (creating `.gitignore` if absent — these are
+  working artefacts, not tracked history).
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs — the
+directory is an ordered history. Structure:
 
 ```
 # Dependency audit — <ecosystem>

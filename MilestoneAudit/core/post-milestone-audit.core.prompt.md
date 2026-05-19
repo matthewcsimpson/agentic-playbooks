@@ -34,11 +34,11 @@ This audit runs after every milestone. The goals are:
    findings don't keep resurfacing as if they were new.
 
 The deliverable is a single markdown report written to
-`docs/audits/<latest-tag>-<timestamp>.md` (see Step 8). Each run
-produces a new file so re-auditing the same tag accumulates an
-ordered history instead of overwriting. The `docs/` folder should
-be gitignored (or whichever working-artefact directory the project
-uses) — the report is for reference, not for the repo history.
+`<root>/<latest-tag>-<timestamp>.md` (see the Output format step
+for how to resolve `<root>`). Each run produces a new file so
+re-auditing the same tag accumulates an ordered history instead
+of overwriting. The working folder is gitignored — the report is
+for reference, not for the repo history.
 
 Do not make any code changes — investigate and report only.
 
@@ -55,7 +55,9 @@ Run these and use the output to scope the audit:
   the baseline.
 - `git diff <previous-tag>..<latest-tag> --stat` — the milestone's
   changed files.
-- `ls docs/audits/` — list any prior audit reports.
+- `ls .playbook-audits/ 2>/dev/null || ls docs/audits/ 2>/dev/null`
+  — list any prior audit reports (the new convention is
+  `.playbook-audits/`; `docs/audits/` is the legacy fallback).
 
 If a prior audit report exists, read the most recent one before
 starting. The new report must include a delta section: what was
@@ -208,12 +210,20 @@ milestone introduced it deliberately or accidentally.
 
 ## Output format
 
-Write the full report to `docs/audits/<latest-tag>-<timestamp>.md`,
-where `<timestamp>` is current UTC time in basic ISO 8601 format
-`YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S` (e.g.
-`20260519T143022`). Always write a new file; do not overwrite prior
-runs (even for the same tag) — the directory is an ordered history.
-Structure:
+Write the full report to `<root>/<latest-tag>-<timestamp>.md`,
+where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/audits/` if that exists (legacy convention),
+  else create `.playbook-audits/` and append `.playbook-audits/`
+  to `.gitignore` (creating `.gitignore` if absent — these are
+  working artefacts, not tracked history).
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs (even for the
+same tag) — the directory is an ordered history. Structure:
 
 ```
 # Audit — <tag>
@@ -279,8 +289,9 @@ If a category has no findings, mark it ✅ PASS.
 
 - Do not modify any code.
 - Do not write findings to any file other than
-  `docs/audits/<latest-tag>-<timestamp>.md`.
-- If `docs/audits/` does not exist, create it.
+  `<root>/<latest-tag>-<timestamp>.md`.
+- If `<root>` does not exist, create it (default `.playbook-audits/`,
+  see Output format).
 - Every ⚠️ ISSUE must include a file path and line number.
   "Throughout the codebase" is not acceptable — pick the worst
   offender.

@@ -36,12 +36,11 @@ milestone's headline behaviour against a running instance, so
 regressions surface before they propagate into the next milestone.
 
 The deliverable is a single markdown report written to
-`docs/smoke-tests/<latest-tag>-<timestamp>.md` (see Step 6). Each
-run produces a new file so re-running for the same tag accumulates
-an ordered history instead of overwriting. The `docs/` folder
-should be gitignored (or whichever working-artefact directory the
-project uses) — the report is a working artefact, not a tracked
-file.
+`<root>/smoke-tests/<latest-tag>-<timestamp>.md` (see Step 6 for
+how to resolve `<root>`). Each run produces a new file so
+re-running for the same tag accumulates an ordered history
+instead of overwriting. The working folder is gitignored — the
+report is a working artefact, not a tracked file.
 
 ---
 
@@ -159,14 +158,23 @@ Every observation is its own pass / fail row.
 
 ## Step 6 — Write the report
 
-Write the report to `docs/smoke-tests/<latest-tag>-<timestamp>.md`,
-where `<timestamp>` is current UTC time in basic ISO 8601 format
-`YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S` (e.g.
-`20260519T143022`). Always write a new file; do not overwrite prior
-runs (even for the same tag) — the directory is an ordered history.
-Use the same `<timestamp>` for variant-specific artefact paths
-(`docs/smoke-tests/<tag>-<timestamp>/<flow>.log`, etc.) so each run
-is self-contained. The shape is:
+Write the report to `<root>/smoke-tests/<latest-tag>-<timestamp>.md`,
+where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/` if `docs/smoke-tests/` exists (legacy
+  convention), else create `.playbook-audits/` and append
+  `.playbook-audits/` to `.gitignore` (creating `.gitignore` if
+  absent — these are working artefacts, not tracked history).
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs (even for the
+same tag) — the directory is an ordered history. Use the same
+`<root>` and `<timestamp>` for variant-specific artefact paths
+(`<root>/smoke-tests/<tag>-<timestamp>/<flow>.log`, etc.) so each
+run is self-contained. The shape is:
 
 ```
 # Smoke Test — <tag>
@@ -229,11 +237,12 @@ can act on it.
 - Do not modify any code. The smoke test only observes and
   executes.
 - Do not write findings to any file other than
-  `docs/smoke-tests/<latest-tag>-<timestamp>.md` and any
+  `<root>/smoke-tests/<latest-tag>-<timestamp>.md` and any
   variant-specific artefact paths (which must also live under
-  `docs/smoke-tests/`, scoped to the run's `<tag>-<timestamp>/`
+  `<root>/smoke-tests/`, scoped to the run's `<tag>-<timestamp>/`
   folder).
-- If `docs/smoke-tests/` does not exist, create it.
+- If `<root>/smoke-tests/` does not exist, create it (default
+  `.playbook-audits/smoke-tests/`).
 - Each flow must reference at least one issue / ticket from the
   milestone — that's the trace from "we shipped this" to "we
   tested this."

@@ -224,7 +224,12 @@ unclear from the migration alone.
 ## Step 4 — Report
 
 The audit's output goes to the PR / commit conversation or to
-`docs/audits/migrations/<migration-id>.md`. Structure:
+`<root>/migrations/<migration-id>.md`, where `<root>` resolves in
+this order: `.playbook-audits/` if it exists, else `docs/audits/`
+if that exists (legacy convention), else create
+`.playbook-audits/` and append `.playbook-audits/` to `.gitignore`
+(creating `.gitignore` if absent — these are working artefacts,
+not tracked history). Structure:
 
 ```
 # Migration audit — <migration id or name>

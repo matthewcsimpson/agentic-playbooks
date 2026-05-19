@@ -160,10 +160,12 @@ heuristic and the pull is cheap.
 
 ## §2 — Ingest the inputs (GitHub commands)
 
-Determine the cutoff. Find the most recent prior audit by listing
-`docs/audits/planning-doc-drift.github-wiki-*.md` and taking the
-file whose `YYYYMMDDTHHMMSS` suffix sorts last
-(`ls -1 docs/audits/planning-doc-drift.github-wiki-*.md 2>/dev/null | sort | tail -1`).
+Determine the cutoff. Resolve `<root>` in this order:
+`.playbook-audits/` if it exists, else `docs/audits/` if that
+exists (legacy convention). Find the most recent prior audit by
+listing `<root>/planning-doc-drift.github-wiki-*.md` and taking
+the file whose `YYYYMMDDTHHMMSS` suffix sorts last
+(`ls -1 <root>/planning-doc-drift.github-wiki-*.md 2>/dev/null | sort | tail -1`).
 If one exists, parse its `Date:` header (always `YYYY-MM-DD`, see
 §5) — that's the `since` value. Otherwise default to 90 days ago,
 formatted as `YYYY-MM-DD`. The cutoff variable is plain ISO date —
@@ -242,14 +244,21 @@ out is `Stale-but-correct`.
 
 ## §5 — Report path
 
-Write to **`docs/audits/planning-doc-drift.github-wiki-<timestamp>.md`**
-in the main repo, where `<timestamp>` is current UTC time in basic
-ISO 8601 format `YYYYMMDDTHHMMSS` — generate with
-`date -u +%Y%m%dT%H%M%S` (e.g. `20260519T143022`). Always write a
-new file; do not overwrite prior runs — the directory is an
-ordered history. Create the `docs/audits/` directory if absent
-(matches the convention used by `doc-code-drift-audit` and
-`post-milestone-audit-*`).
+Write to **`<root>/planning-doc-drift.github-wiki-<timestamp>.md`**
+in the main repo, where:
+
+- `<root>` resolves in this order: `.playbook-audits/` if it
+  exists, else `docs/audits/` if that exists (legacy convention),
+  else create `.playbook-audits/` and append `.playbook-audits/`
+  to `.gitignore` (creating `.gitignore` if absent — these are
+  working artefacts, not tracked history). Use the same `<root>`
+  found in §2 when computing the cutoff.
+- `<timestamp>` is current UTC time in basic ISO 8601 format
+  `YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S`
+  (e.g. `20260519T143022`).
+
+Always write a new file; do not overwrite prior runs — the
+directory is an ordered history.
 
 If a prior report exists (see §2 for how to find it), lift its
 `Date:` line into a `Prior audit:` line in the new report so the

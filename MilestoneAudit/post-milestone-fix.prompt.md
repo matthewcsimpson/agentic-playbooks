@@ -29,15 +29,18 @@ guess scope.
 
 ## Step 1 — Locate the audit
 
-Read the most recent audit report. Files are named
-`docs/audits/<tag>-<timestamp>.md` (e.g.
-`docs/audits/v1.6.0-20260519T143022.md`); pick the latest by sorting
-lexicographically — both `<tag>` and the `YYYYMMDDTHHMMSS` suffix
-sort correctly (`ls -1 docs/audits/*.md 2>/dev/null | sort | tail -1`).
-If the user named a specific tag, restrict to that tag first
-(`ls -1 docs/audits/<tag>-*.md | sort | tail -1`). If the directory
-or any report doesn't exist, surface that and stop — there's
-nothing to action.
+Read the most recent audit report. Resolve `<root>` in this order:
+`.playbook-audits/` if it exists, else `docs/audits/` if that
+exists (legacy convention). Files are named
+`<root>/<tag>-<timestamp>.md` (e.g.
+`.playbook-audits/v1.6.0-20260519T143022.md`); pick the latest by
+sorting lexicographically — both `<tag>` and the `YYYYMMDDTHHMMSS`
+suffix sort correctly
+(`ls -1 <root>/*.md 2>/dev/null | sort | tail -1`). If the user
+named a specific tag, restrict to that tag first
+(`ls -1 <root>/<tag>-*.md | sort | tail -1`). If neither root
+exists or any report can't be found, surface that and stop —
+there's nothing to action.
 
 ---
 
