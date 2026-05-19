@@ -31,36 +31,44 @@ guess scope.
 
 Read the most recent milestone audit report. Resolve `<root>` in
 this order: `.playbook-audits/` if it exists, else `docs/` if
-`docs/audits/` exists (legacy convention).
+`docs/audits/` exists (legacy convention). Which root won
+determines both where reports live and how to locate them — the
+two branches do not share a fallback.
 
-Files live at:
+**If `<root>` is `.playbook-audits/` (new convention):**
 
-- New convention: `<root>/milestones/<tag>-<timestamp>.md` (e.g.
-  `.playbook-audits/milestones/v1.6.0-20260519T143022.md`).
-- Legacy convention: `<root>/audits/<tag>-<timestamp>.md` (where
-  milestone reports are mixed in with other audit reports).
-
-To find the latest report, try the new path first, then legacy:
+Reports live at `<root>/milestones/<tag>-<timestamp>.md` (e.g.
+`.playbook-audits/milestones/v1.6.0-20260519T143022.md`). Scan
+only that subfolder:
 
 ```
 ls -1 <root>/milestones/*.md 2>/dev/null | sort | tail -1
-ls -1 <root>/audits/*-*.md  2>/dev/null | sort | tail -1
 ```
 
 Both `<tag>` and the `YYYYMMDDTHHMMSS` suffix sort
 lexicographically, so `sort | tail -1` picks the latest. If the
 user named a specific tag, restrict by tag first
-(`<root>/milestones/<tag>-*.md` or `<root>/audits/<tag>-*.md`).
+(`<root>/milestones/<tag>-*.md`). Do **not** fall back to
+`<root>/audits/` — under the new layout that directory holds
+non-milestone audit reports (`dead-code-*.md`,
+`observability-*.md`, etc.) and matching there would surface the
+wrong file.
 
-Under the legacy layout, the `<root>/audits/` directory mixes
-milestone reports with other audit reports
-(`dead-code-...md`, `observability-...md`, etc.). If no tag is
-named and the legacy directory contains both, ask the user to
-disambiguate — picking by timestamp alone could surface the wrong
-file.
+**If `<root>` is `docs/` (legacy convention):**
 
-If neither root nor any report can be found, surface that and
-stop — there's nothing to action.
+Reports live at `<root>/audits/<tag>-<timestamp>.md`, mixed in
+with other audit reports (the legacy layout did not separate
+them). Because of the mixing, picking by timestamp alone is
+unsafe — a `<tag>` is required. If the user didn't supply one,
+ask for it before scanning. Then:
+
+```
+ls -1 <root>/audits/<tag>-*.md 2>/dev/null | sort | tail -1
+```
+
+**If neither root exists, or the scan above returns empty:**
+
+Surface that and stop — there's nothing to action.
 
 ---
 
