@@ -613,8 +613,33 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Status
 
-Stable at [v1.4.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.4.0).
-v1.4.0 adds three playbooks and broadens two existing ones. The new
+Stable at [v1.5.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.5.0).
+v1.5.0 adds one collection and three playbooks. The new `SEOAudit/`
+collection ships `seo-audit` and `seo-fix` — a stack-agnostic SEO
+audit / fix pair for web apps. The audit detects the framework
+(Next.js App / Pages router, Nuxt, Remix, SvelteKit, Astro, Gatsby,
+static generators, CSR-only SPA) and rendering mode at Step 1 and
+adapts its declaration sites accordingly. Monorepo-aware out of the
+box — Turborepo, pnpm / npm / yarn workspaces, and Nx are detected;
+the audit enumerates apps, asks which are user-facing indexable, tags
+findings per-app; the fix prompt's verification uses workspace-scoped
+builds (`turbo --filter`, `pnpm --filter`, etc.). The audit is
+static-only by design — Core Web Vitals, rich-result eligibility, and
+crawler-visible HTML in CSR apps require a runtime probe and are
+pointed at `MilestoneSmoke/post-milestone-smoke-test.web`. The fix's
+default scope is `crawlability` + `metadata` + `canonical` +
+`noindex-leakage`; structured data, images, and performance categories
+are opt-in. `ObservabilityAudit/` also gained a fix companion —
+`observability-fix` actions audit findings per category, with default
+scope `sensitive-data` + `log-levels` + `health-checks` (mechanical,
+low blast radius). `error-handling`, `correlation`, `tracing`, and
+`metrics` are opt-in. Empty catches and log-and-swallow sites stop-
+and-ask by default — the log-only / log + rethrow / log + return-
+failure decision is behavioural. Sensitive-data fixes always commit
+ahead of other categories, and commit messages never name the
+redacted value. Catalog grew from 55 to 58 playbooks.
+
+v1.4.0 added three playbooks and broadened two existing ones. The new
 `planning-doc-drift-audit` / `planning-doc-drift-fix` pair (first
 variant: `.github-wiki`) surfaces decision / scope / architecture
 drift between an external planning doc and the issues + commits that
