@@ -1,6 +1,6 @@
 ---
 description: Plan a Terraform / OpenTofu CLI or major provider upgrade (e.g. AWS provider 4 → 5) — read release notes, scan for patterns, produce a risk-ranked migration plan.
-related: [stack-upgrade-fix-terraform, post-milestone-fix]
+related: [stack-upgrade-fix-terraform]
 ---
 
 # Stack upgrade — Terraform / OpenTofu variant

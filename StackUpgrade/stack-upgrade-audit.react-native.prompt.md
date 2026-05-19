@@ -1,6 +1,6 @@
 ---
 description: Plan a React Native / Expo SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [stack-upgrade-fix-react-native, post-milestone-fix]
+related: [stack-upgrade-fix-react-native]
 ---
 
 # Stack upgrade — React Native variant

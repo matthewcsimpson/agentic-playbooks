@@ -6,4 +6,4 @@ user-invocable: false
 
 Follow the instructions in [`StackUpgrade/stack-upgrade-audit.terraform.prompt.md`](../../../StackUpgrade/stack-upgrade-audit.terraform.prompt.md).
 
-Related: `/playbook stack-upgrade-fix-terraform`, `/playbook post-milestone-fix`.
+Related: `/playbook stack-upgrade-fix-terraform`.

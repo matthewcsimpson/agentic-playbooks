@@ -1,6 +1,6 @@
 ---
 description: Plan a NestJS major version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [stack-upgrade-fix-nestjs, post-milestone-fix]
+related: [stack-upgrade-fix-nestjs]
 ---
 
 # Stack upgrade — NestJS variant

@@ -311,7 +311,7 @@ Variants:
   File: `../../StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
 
-Related across the family: `stack-upgrade-fix-dotnet`, `post-milestone-fix`
+Related across the family: `stack-upgrade-fix-dotnet`
 
 ### `stack-upgrade-fix`
 

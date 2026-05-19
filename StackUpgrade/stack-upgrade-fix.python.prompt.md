@@ -170,9 +170,12 @@ updates):
 # uv
 uv lock --upgrade
 
-# Poetry
-poetry lock --no-update          # if you want versions stable
-poetry update                    # if you want re-resolution
+# Poetry — detect major from `poetry --version` first; semantics differ.
+# Poetry 2.x (2025+): `poetry lock` is no-update by default.
+poetry lock                      # 2.x: no-update default; 1.x: re-resolves
+# Poetry 1.x: pin behaviour explicitly
+poetry lock --no-update          # 1.x: keep versions stable (deprecated in 2.x)
+poetry update                    # both majors: full re-resolution
 
 # pdm
 pdm lock

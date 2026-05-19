@@ -6,4 +6,4 @@ user-invocable: false
 
 Follow the instructions in [`StackUpgrade/stack-upgrade-audit.swift.prompt.md`](../../../StackUpgrade/stack-upgrade-audit.swift.prompt.md).
 
-Related: `/playbook stack-upgrade-fix-swift`, `/playbook post-milestone-fix`.
+Related: `/playbook stack-upgrade-fix-swift`.

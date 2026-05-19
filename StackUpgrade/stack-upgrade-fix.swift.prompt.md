@@ -29,14 +29,19 @@ Read the core first.
 ## §2 — Re-verify the audit
 
 ```sh
-# Current iOS deployment target (xcodeproj)
-grep -h 'IPHONEOS_DEPLOYMENT_TARGET' *.xcodeproj/project.pbxproj 2>/dev/null | sort -u
+# Find every pbxproj (covers Pods/, monorepo apps under apps/<name>/<name>.xcodeproj,
+# embedded frameworks — the root-level *.xcodeproj glob misses these).
+find . -name 'project.pbxproj' -path '*.xcodeproj/*' -not -path '*/build/*' > /tmp/pbxprojs
+
+# Current iOS deployment target
+xargs grep -hE 'IPHONEOS_DEPLOYMENT_TARGET' < /tmp/pbxprojs 2>/dev/null | sort -u
 
 # Swift language version
-grep -h 'SWIFT_VERSION' *.xcodeproj/project.pbxproj 2>/dev/null | sort -u
+xargs grep -hE 'SWIFT_VERSION' < /tmp/pbxprojs 2>/dev/null | sort -u
 
-# Package.swift platforms
-grep -A2 'platforms:' Package.swift 2>/dev/null
+# Package.swift platforms (SPM library or mixed)
+find . -name 'Package.swift' -not -path '*/.build/*' \
+  -exec grep -HA2 'platforms:' {} \; 2>/dev/null
 
 # Xcode toolchain in CI
 grep -E 'xcode-version|xcode_version' .github/workflows/*.yml 2>/dev/null

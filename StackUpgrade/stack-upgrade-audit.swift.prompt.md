@@ -1,6 +1,6 @@
 ---
 description: Plan a Swift / Xcode / iOS SDK upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
-related: [stack-upgrade-fix-swift, post-milestone-fix]
+related: [stack-upgrade-fix-swift]
 ---
 
 # Stack upgrade — Swift / Xcode variant

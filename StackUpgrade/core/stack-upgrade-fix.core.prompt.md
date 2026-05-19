@@ -166,6 +166,15 @@ order:
    - Include the upstream codemod source in the commit body so a
      reviewer can look it up.
 
+**Commit-prefix convention.** Sibling fix prompts use `deps:` /
+`obs:` / `seo:` with optional scope. `stack-upgrade-fix` uses
+`upgrade(<framework>):` with **mandatory** scope. This divergence is
+intentional: a monorepo may legitimately run multiple
+`stack-upgrade-fix` variants in the same branch (the marketing
+Next.js app and the API NestJS service upgraded together), and the
+framework token in the commit prefix is load-bearing for the
+reviewer trail. Keep the scope mandatory for this family.
+
 After all codemods are processed, run the variant's full check suite
 once before moving to mechanical edits.
 

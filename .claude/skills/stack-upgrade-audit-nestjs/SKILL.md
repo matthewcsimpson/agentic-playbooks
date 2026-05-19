@@ -6,4 +6,4 @@ user-invocable: false
 
 Follow the instructions in [`StackUpgrade/stack-upgrade-audit.nestjs.prompt.md`](../../../StackUpgrade/stack-upgrade-audit.nestjs.prompt.md).
 
-Related: `/playbook stack-upgrade-fix-nestjs`, `/playbook post-milestone-fix`.
+Related: `/playbook stack-upgrade-fix-nestjs`.

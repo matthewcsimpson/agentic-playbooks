@@ -28,11 +28,17 @@ Read the core first.
 ## §2 — Re-verify the audit
 
 ```sh
+# Find every .tf file (shell-portable; doesn't depend on globstar). Exclude
+# .terraform/ caches and module sources we'd otherwise re-scan.
+find . -name '*.tf' \
+  -not -path '*/.terraform/*' \
+  -not -path '*/.terragrunt-cache/*' > /tmp/tffiles
+
 # Required Terraform / OpenTofu version
-grep -hE 'required_version' *.tf **/*.tf 2>/dev/null | sort -u
+xargs grep -hE 'required_version' < /tmp/tffiles 2>/dev/null | sort -u
 
 # Provider versions
-grep -A2 -E 'required_providers\s*\{' *.tf **/*.tf | head -50
+xargs grep -hEA2 'required_providers\s*\{' < /tmp/tffiles 2>/dev/null | head -50
 
 # CLI version actually installed
 terraform version
