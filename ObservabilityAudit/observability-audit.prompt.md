@@ -1,5 +1,6 @@
 ---
 description: Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
+related: [observability-fix]
 ---
 
 # Observability audit
@@ -390,7 +391,8 @@ If a section has no findings, mark it ✅ PASS.
 ## Constraints
 
 - Do not modify any code. Surface findings; the user picks which to
-  fix.
+  fix. `observability-fix` is the action companion — it consumes
+  this audit's report.
 - Every ⚠️ ISSUE must include a file path and line number. "The
   codebase logs sensitive data" is not acceptable — pick the worst
   offender.

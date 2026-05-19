@@ -168,6 +168,10 @@ This file is generated from the prompts' YAML frontmatter by
 
 - **observability-audit** — Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
   Read: `ObservabilityAudit/observability-audit.prompt.md`
+  Related: `observability-fix`
+- **observability-fix** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, add correlation gaps. Verify build, commit per category. Local only.
+  Read: `ObservabilityAudit/observability-fix.prompt.md`
+  Related: `observability-audit`
 
 ### PRWorkflow
 
@@ -188,6 +192,15 @@ This file is generated from the prompts' YAML frontmatter by
 - **duplicate-logic-fix** — Action user-selected clusters from the most recent duplicate-logic-audit report. Migrate callers to the recommended winner, delete losers, verify, commit per cluster. Local commits only.
   Read: `Refactoring/duplicate-logic-fix.prompt.md`
   Related: `duplicate-logic-audit`
+
+### SEOAudit
+
+- **seo-audit** — Read-only SEO audit for a web app — crawlability, on-page metadata, structured data, semantic HTML, images, URL structure, and i18n. Static analysis only.
+  Read: `SEOAudit/seo-audit.prompt.md`
+  Related: `seo-fix`
+- **seo-fix** — Action findings from seo-audit. Edits metadata, robots, sitemap, canonical, JSON-LD, alt, lang per category, verifies build, commits per category. Local commits only.
+  Read: `SEOAudit/seo-fix.prompt.md`
+  Related: `seo-audit`
 
 ### StackUpgrade
 

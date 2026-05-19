@@ -456,13 +456,42 @@ See [`DependencyAudit/README.md`](DependencyAudit/README.md).
 ### `ObservabilityAudit/`
 
 Read-only audit of how the codebase logs, traces, and surfaces
-errors at runtime. Stack-agnostic — the questions (swallowed
+errors at runtime, paired with a narrow-scope fix prompt that
+actions the findings. Stack-agnostic — the questions (swallowed
 errors, missing correlation IDs, log-level mismatches, PII in
 logs, dishonest health checks) are universal.
 
-- `observability-audit.prompt.md` — single stack-agnostic prompt.
+- `observability-audit.prompt.md` — single stack-agnostic audit.
+- `observability-fix.prompt.md` — actions audit findings. Default
+  scope is `sensitive-data` + `log-levels` (mechanical, low blast
+  radius); `error-handling`, `correlation`, `tracing`, `metrics`,
+  and `health-checks` are opt-in because they change runtime
+  behaviour. Sensitive-data fixes always commit ahead of other
+  categories. Commits per category. Does not push.
 
 See [`ObservabilityAudit/README.md`](ObservabilityAudit/README.md).
+
+### `SEOAudit/`
+
+Read-only SEO audit for a web app, paired with a narrow-scope fix
+prompt that actions the findings. Crawlability, on-page metadata,
+structured data, semantic HTML, images, URL structure, i18n,
+static performance heuristics. Stack-agnostic — the audit detects
+the framework (Next.js, Nuxt, Remix, SvelteKit, Astro, static
+generators, CSR-only SPA) and adapts its declaration sites.
+
+- `seo-audit.prompt.md` — single stack-agnostic audit.
+- `seo-fix.prompt.md` — actions audit findings. Default scope is
+  `crawlability` + `metadata` + `canonical` + `noindex-leakage`;
+  structured data, images, and performance categories are opt-in.
+  Commits per category. Does not push.
+
+Static-only. Core Web Vitals, rich-result eligibility, and
+crawler-visible HTML in CSR apps need a runtime probe — pair with
+`MilestoneSmoke/post-milestone-smoke-test.web.prompt.md` or a manual
+Lighthouse / Search Console pass.
+
+See [`SEOAudit/README.md`](SEOAudit/README.md).
 
 ### `DocsHygiene/`
 

@@ -5,3 +5,5 @@ user-invocable: false
 ---
 
 Follow the instructions in [`ObservabilityAudit/observability-audit.prompt.md`](../../../ObservabilityAudit/observability-audit.prompt.md).
+
+Related: `/playbook observability-fix`.
