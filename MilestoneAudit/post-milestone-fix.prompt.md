@@ -29,10 +29,15 @@ guess scope.
 
 ## Step 1 — Locate the audit
 
-Read `docs/audits/<latest-tag>.md` (find the most recent file in
-`docs/audits/` if the tag isn't obvious). If the directory or the
-report doesn't exist, surface that and stop — there's nothing to
-action.
+Read the most recent audit report. Files are named
+`docs/audits/<tag>-<timestamp>.md` (e.g.
+`docs/audits/v1.6.0-20260519T143022.md`); pick the latest by sorting
+lexicographically — both `<tag>` and the `YYYYMMDDTHHMMSS` suffix
+sort correctly (`ls -1 docs/audits/*.md 2>/dev/null | sort | tail -1`).
+If the user named a specific tag, restrict to that tag first
+(`ls -1 docs/audits/<tag>-*.md | sort | tail -1`). If the directory
+or any report doesn't exist, surface that and stop — there's
+nothing to action.
 
 ---
 

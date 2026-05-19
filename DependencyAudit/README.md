@@ -113,9 +113,12 @@ capability set should work.
 
 ## Output discipline
 
-The audit writes to `docs/audits/dependencies.md`. The `docs/audits/`
+The audit writes to `docs/audits/dependencies-<timestamp>.md`
+(e.g. `docs/audits/dependencies-20260519T143022.md`). Each run
+produces a new file so the directory accumulates an ordered
+history; the fix prompt picks the most recent. The `docs/audits/`
 folder should be gitignored — these are working artefacts, not
-tracked history. Re-runs overwrite the file in place.
+tracked history.
 
 The fix produces local commits, one per category actioned.
 

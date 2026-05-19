@@ -28,7 +28,7 @@ the top of this folder; the shared scaffold lives in `core/`.
    [`MilestoneSmoke/`](../MilestoneSmoke/) to catch behavioural
    regressions first.
 3. Run the **audit variant** that matches your stack — produces
-   `docs/audits/<tag>.md`.
+   `docs/audits/<tag>-<timestamp>.md`.
 4. Triage the audit (override the `Suggested:` labels where
    needed).
 5. Run **fix** with the labels and sections you want actioned.
@@ -82,10 +82,14 @@ both.
 
 ## Output discipline
 
-The audit writes to `docs/audits/<tag>.md`. The `docs/` folder
-should be gitignored — these are working artefacts, not tracked
-history. The audit uses prior reports to compute a delta, so
-keeping them locally matters, but committing them invites churn.
+The audit writes to `docs/audits/<tag>-<timestamp>.md` (e.g.
+`docs/audits/v1.6.0-20260519T143022.md`). Each run produces a new
+file so re-auditing the same tag accumulates an ordered history
+instead of overwriting; the fix prompt picks the most recent. The
+`docs/` folder should be gitignored — these are working artefacts,
+not tracked history. The audit uses prior reports to compute a
+delta, so keeping them locally matters, but committing them
+invites churn.
 
 ## Required tool capabilities
 

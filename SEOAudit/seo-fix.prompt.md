@@ -89,12 +89,15 @@ guess scope. The audit is the survey; the fix should be deliberate.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `docs/audits/seo.md`. Look for the file first;
-if no report exists there, ask the user whether they have an inline
-report to paste, or whether they need to run the audit.
+The audit writes to `docs/audits/seo-<timestamp>.md`. Look for
+files matching `docs/audits/seo-*.md` and pick the most recent
+(`ls -1 docs/audits/seo-*.md 2>/dev/null | sort | tail -1` — the
+`YYYYMMDDTHHMMSS` suffix sorts lexicographically). If no report
+exists there, ask the user whether they have an inline report to
+paste, or whether they need to run the audit.
 
-If multiple reports exist (timestamped), use the most recent unless
-the user named one explicitly.
+If the user named a specific report file, use that one instead of the
+most recent.
 
 If neither a file nor an inline report is available, stop and
 recommend running `/playbook seo-audit` first.

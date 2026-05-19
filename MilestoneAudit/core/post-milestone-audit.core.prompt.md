@@ -34,9 +34,11 @@ This audit runs after every milestone. The goals are:
    findings don't keep resurfacing as if they were new.
 
 The deliverable is a single markdown report written to
-`docs/audits/<latest-tag>.md`. The `docs/` folder should be gitignored
-(or whichever working-artefact directory the project uses) — the
-report is for reference, not for the repo history.
+`docs/audits/<latest-tag>-<timestamp>.md` (see Step 8). Each run
+produces a new file so re-auditing the same tag accumulates an
+ordered history instead of overwriting. The `docs/` folder should
+be gitignored (or whichever working-artefact directory the project
+uses) — the report is for reference, not for the repo history.
 
 Do not make any code changes — investigate and report only.
 
@@ -206,7 +208,12 @@ milestone introduced it deliberately or accidentally.
 
 ## Output format
 
-Write the full report to `docs/audits/<latest-tag>.md`. Structure:
+Write the full report to `docs/audits/<latest-tag>-<timestamp>.md`,
+where `<timestamp>` is current UTC time in basic ISO 8601 format
+`YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S` (e.g.
+`20260519T143022`). Always write a new file; do not overwrite prior
+runs (even for the same tag) — the directory is an ordered history.
+Structure:
 
 ```
 # Audit — <tag>
@@ -272,7 +279,7 @@ If a category has no findings, mark it ✅ PASS.
 
 - Do not modify any code.
 - Do not write findings to any file other than
-  `docs/audits/<latest-tag>.md`.
+  `docs/audits/<latest-tag>-<timestamp>.md`.
 - If `docs/audits/` does not exist, create it.
 - Every ⚠️ ISSUE must include a file path and line number.
   "Throughout the codebase" is not acceptable — pick the worst

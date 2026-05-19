@@ -535,7 +535,11 @@ opted in.
 
 ## Step 11 — Report
 
-Output to `docs/audits/seo.md`. Structure:
+Output to `docs/audits/seo-<timestamp>.md`, where `<timestamp>` is
+current UTC time in basic ISO 8601 format `YYYYMMDDTHHMMSS` —
+generate with `date -u +%Y%m%dT%H%M%S` (e.g. `20260519T143022`).
+Always write a new file; do not overwrite prior runs — the
+directory is an ordered history. Structure:
 
 ```
 # SEO audit

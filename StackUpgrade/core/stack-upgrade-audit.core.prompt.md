@@ -37,7 +37,8 @@ This prompt produces a **migration plan**, not a fix. The plan:
 5. Surveys available codemods and lint rules.
 6. Produces an ordered, risk-ranked migration plan.
 
-The deliverable is `docs/upgrades/<stack>-<from>-<to>.md`.
+The deliverable is `docs/upgrades/<stack>-<from>-<to>-<timestamp>.md`
+(see the report step below).
 
 Do not perform the upgrade. Do not change `package.json`,
 `pyproject.toml`, `.csproj`, or any other manifest. Do not run
@@ -237,6 +238,13 @@ Effort:
 ---
 
 ## Step 7 — Migration plan
+
+Write the plan to `docs/upgrades/<stack>-<from>-<to>-<timestamp>.md`,
+where `<timestamp>` is current UTC time in basic ISO 8601 format
+`YYYYMMDDTHHMMSS` — generate with `date -u +%Y%m%dT%H%M%S` (e.g.
+`20260519T143022`). Always write a new file; do not overwrite prior
+runs (even for the same stack and version pair) — the directory is
+an ordered history. Create the `docs/upgrades/` directory if absent.
 
 Produce an ordered, executable plan. Structure:
 

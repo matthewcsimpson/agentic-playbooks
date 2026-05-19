@@ -134,9 +134,13 @@ capability set should work.
 
 ## Output discipline
 
-The audit writes to `docs/upgrades/<stack>-<from>-<to>.md`. The
-`docs/` folder should be gitignored — these are working artefacts,
-not tracked history. Re-runs overwrite the file in place.
+The audit writes to
+`docs/upgrades/<stack>-<from>-<to>-<timestamp>.md` (e.g.
+`docs/upgrades/nextjs-14-15-20260519T143022.md`). Each run produces
+a new file so re-auditing the same upgrade path accumulates an
+ordered history; the fix prompt picks the most recent for that
+`<stack>-<from>-<to>` prefix. The `docs/` folder should be
+gitignored — these are working artefacts, not tracked history.
 
 The fix prompt reads that file, actions per category with a
 verify-and-commit gate between categories, and writes its own
