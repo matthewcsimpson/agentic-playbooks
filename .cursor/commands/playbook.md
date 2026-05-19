@@ -98,6 +98,10 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
   Related: `duplicate-logic-audit`
 - **`observability-audit`** — Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
   File: `../../ObservabilityAudit/observability-audit.prompt.md`
+  Related: `observability-fix`
+- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, propagate correlation IDs. Verify build, commit per category. Local only.
+  File: `../../ObservabilityAudit/observability-fix.prompt.md`
+  Related: `observability-audit`
 - **`post-milestone-fix`** — Action the in-scope findings from the most recent post-milestone audit report. Commits locally; does not push or open a PR.
   File: `../../MilestoneAudit/post-milestone-fix.prompt.md`
   Related: `post-milestone-audit-dotnet`, `post-milestone-audit-nestjs`, `post-milestone-audit-nextjs`, `post-milestone-audit-python`, `post-milestone-audit-react-native`, `post-milestone-audit-swift`, `post-milestone-audit-terraform`
@@ -108,6 +112,12 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
   File: `../../PRWorkflow/pre-pr-checklist.prompt.md`
 - **`regression-bisect`** — Given last-known-good, symptom, and reproduction steps, drive a disciplined git bisect to the breaking commit and propose a fix.
   File: `../../Debugging/regression-bisect.prompt.md`
+- **`seo-audit`** — Read-only SEO audit for a web app — crawlability, on-page metadata, structured data, semantic HTML, images, URL structure, and i18n. Static analysis only.
+  File: `../../SEOAudit/seo-audit.prompt.md`
+  Related: `seo-fix`
+- **`seo-fix`** — Action findings from seo-audit. Edits metadata, robots, sitemap, canonical, JSON-LD, alt, lang per category, verifies build, commits per category. Local commits only.
+  File: `../../SEOAudit/seo-fix.prompt.md`
+  Related: `seo-audit`
 - **`test-coverage-audit`** — Survey a repository's test coverage from scratch, identify the most important gaps, and present a ranked list of recommendations.
   File: `../../AuditTesting/test-coverage-audit.prompt.md`
   Related: `test-coverage-fix`

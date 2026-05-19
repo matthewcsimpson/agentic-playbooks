@@ -166,6 +166,10 @@ generated from those sources by `tools/generate-adapters.py`.
 
 - **`observability-audit`** — Read-only audit of how a codebase logs, traces, and surfaces errors — swallowed errors, missing correlation IDs, log-level mismatches, PII in logs, dishonest health checks.
   Path: `ObservabilityAudit/observability-audit.prompt.md`
+  Related: `observability-fix`
+- **`observability-fix`** — Action findings from observability-audit. Fix log levels, redact sensitive data, repair swallowed errors, propagate correlation IDs. Verify build, commit per category. Local only.
+  Path: `ObservabilityAudit/observability-fix.prompt.md`
+  Related: `observability-audit`
 
 ## PRWorkflow
 
@@ -186,6 +190,15 @@ generated from those sources by `tools/generate-adapters.py`.
 - **`duplicate-logic-fix`** — Action user-selected clusters from the most recent duplicate-logic-audit report. Migrate callers to the recommended winner, delete losers, verify, commit per cluster. Local commits only.
   Path: `Refactoring/duplicate-logic-fix.prompt.md`
   Related: `duplicate-logic-audit`
+
+## SEOAudit
+
+- **`seo-audit`** — Read-only SEO audit for a web app — crawlability, on-page metadata, structured data, semantic HTML, images, URL structure, and i18n. Static analysis only.
+  Path: `SEOAudit/seo-audit.prompt.md`
+  Related: `seo-fix`
+- **`seo-fix`** — Action findings from seo-audit. Edits metadata, robots, sitemap, canonical, JSON-LD, alt, lang per category, verifies build, commits per category. Local commits only.
+  Path: `SEOAudit/seo-fix.prompt.md`
+  Related: `seo-audit`
 
 ## StackUpgrade
 
