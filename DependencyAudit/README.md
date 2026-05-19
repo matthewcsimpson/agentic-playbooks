@@ -113,14 +113,14 @@ capability set should work.
 
 ## Output discipline
 
-The audit writes to `<root>/dependencies-<timestamp>.md` (e.g.
-`.playbook-audits/dependencies-20260519T143022.md`). `<root>`
-resolves in this order: `.playbook-audits/` if it exists, else
-`docs/audits/` if that exists (legacy convention), else the audit
-creates `.playbook-audits/` and appends it to `.gitignore` on
-first use. Each run produces a new file so the directory
-accumulates an ordered history; the fix prompt picks the most
-recent.
+The audit writes to `<root>/audits/dependencies-<timestamp>.md`
+(e.g. `.playbook-audits/audits/dependencies-20260519T143022.md`).
+`<root>` resolves in this order: `.playbook-audits/` if it
+exists, else `docs/` if `docs/audits/` exists (legacy
+convention), else the audit creates `.playbook-audits/` and
+appends it to `.gitignore` on first use. Each run produces a new
+file so the directory accumulates an ordered history; the fix
+prompt picks the most recent.
 
 The fix produces local commits, one per category actioned.
 

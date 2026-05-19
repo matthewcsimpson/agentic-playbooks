@@ -41,11 +41,12 @@ guess scope.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `<root>/doc-code-drift-<timestamp>.md`. Resolve
-`<root>` in this order: `.playbook-audits/` if it exists, else
-`docs/audits/` if that exists (legacy convention). Look for files
-matching `<root>/doc-code-drift-*.md` and pick the most recent
-(`ls -1 <root>/doc-code-drift-*.md 2>/dev/null | sort | tail -1`
+The audit writes to `<root>/audits/doc-code-drift-<timestamp>.md`.
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/audits/` exists (legacy convention). Look
+for files matching `<root>/audits/doc-code-drift-*.md` and pick
+the most recent
+(`ls -1 <root>/audits/doc-code-drift-*.md 2>/dev/null | sort | tail -1`
 — the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
 neither root exists or no report is found, ask the user whether
 they have an inline report to paste, or whether they need to run

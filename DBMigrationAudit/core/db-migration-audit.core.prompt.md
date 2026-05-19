@@ -223,13 +223,19 @@ unclear from the migration alone.
 
 ## Step 4 — Report
 
-The audit's output goes to the PR / commit conversation or to
-`<root>/migrations/<migration-id>.md`, where `<root>` resolves in
-this order: `.playbook-audits/` if it exists, else `docs/audits/`
-if that exists (legacy convention), else create
-`.playbook-audits/` and append `.playbook-audits/` to `.gitignore`
-(creating `.gitignore` if absent — these are working artefacts,
-not tracked history). Structure:
+The audit's output goes to the PR / commit conversation or to a
+markdown file. Path:
+
+- New convention: `<root>/migrations/<migration-id>.md` where
+  `<root>` = `.playbook-audits/`.
+- Legacy convention: `<root>/audits/migrations/<migration-id>.md`
+  where `<root>` = `docs/`.
+
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/audits/` exists (legacy convention), else
+create `.playbook-audits/` and append `.playbook-audits/` to
+`.gitignore` (creating `.gitignore` if absent — these are working
+artefacts, not tracked history). Structure:
 
 ```
 # Migration audit — <migration id or name>

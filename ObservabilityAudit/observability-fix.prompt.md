@@ -93,14 +93,16 @@ Don't guess. The audit is the survey; the fix should be deliberate.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `<root>/observability-<timestamp>.md`. Resolve
-`<root>` in this order: `.playbook-audits/` if it exists, else
-`docs/audits/` if that exists (legacy convention). Look for files
-matching `<root>/observability-*.md` and pick the most recent
-(`ls -1 <root>/observability-*.md 2>/dev/null | sort | tail -1` —
-the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If neither
-root exists or no report is found, ask the user whether they have
-an inline report to paste, or whether they need to run the audit.
+The audit writes to `<root>/audits/observability-<timestamp>.md`.
+Resolve `<root>` in this order: `.playbook-audits/` if it exists,
+else `docs/` if `docs/audits/` exists (legacy convention). Look
+for files matching `<root>/audits/observability-*.md` and pick
+the most recent
+(`ls -1 <root>/audits/observability-*.md 2>/dev/null | sort | tail -1`
+— the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
+neither root exists or no report is found, ask the user whether
+they have an inline report to paste, or whether they need to run
+the audit.
 
 If the user named a specific report file, use that one instead of the
 most recent.

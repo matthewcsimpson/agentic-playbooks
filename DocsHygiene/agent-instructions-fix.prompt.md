@@ -79,12 +79,12 @@ guess scope.
 
 ## Step 1 — Locate the audit
 
-The audit writes to `<root>/agent-instructions-<timestamp>.md`.
+The audit writes to `<root>/audits/agent-instructions-<timestamp>.md`.
 Resolve `<root>` in this order: `.playbook-audits/` if it exists,
-else `docs/audits/` if that exists (legacy convention). Look for
-files matching `<root>/agent-instructions-*.md` and pick the most
-recent
-(`ls -1 <root>/agent-instructions-*.md 2>/dev/null | sort | tail -1`
+else `docs/` if `docs/audits/` exists (legacy convention). Look
+for files matching `<root>/audits/agent-instructions-*.md` and
+pick the most recent
+(`ls -1 <root>/audits/agent-instructions-*.md 2>/dev/null | sort | tail -1`
 — the `YYYYMMDDTHHMMSS` suffix sorts lexicographically). If
 neither root exists or no report is found, ask the user whether
 they have an inline report to paste, or whether they need to run
