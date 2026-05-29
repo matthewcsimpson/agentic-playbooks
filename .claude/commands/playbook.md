@@ -294,9 +294,15 @@ Variants:
 
 Variants:
 
+- `stack-upgrade-audit-cra` — Create React App (react-scripts)
+  File: `../../StackUpgrade/stack-upgrade-audit.cra.prompt.md`
+  Detect: `react-scripts` in `package.json`, `public/index.html` with `%PUBLIC_URL%`, `REACT_APP_` env vars
 - `stack-upgrade-audit-dotnet` — .NET / C#
   File: `../../StackUpgrade/stack-upgrade-audit.dotnet.prompt.md`
   Detect: `*.csproj`, `*.sln`, `global.json`, `Directory.Packages.props`
+- `stack-upgrade-audit-express` — Express / Node.js backend
+  File: `../../StackUpgrade/stack-upgrade-audit.express.prompt.md`
+  Detect: `express` in `package.json` and no higher-level framework (Nest) wrapping it
 - `stack-upgrade-audit-nestjs` — NestJS backend
   File: `../../StackUpgrade/stack-upgrade-audit.nestjs.prompt.md`
   Detect: `nest-cli.json` or `@nestjs/core` in `package.json`
@@ -316,15 +322,21 @@ Variants:
   File: `../../StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
 
-Related across the family: `stack-upgrade-fix-dotnet`
+Related across the family: `stack-upgrade-fix-cra`
 
 ### `stack-upgrade-fix`
 
 Variants:
 
+- `stack-upgrade-fix-cra` — Create React App (react-scripts)
+  File: `../../StackUpgrade/stack-upgrade-fix.cra.prompt.md`
+  Detect: `react-scripts` in `package.json`, `public/index.html` with `%PUBLIC_URL%`, `REACT_APP_` env vars
 - `stack-upgrade-fix-dotnet` — .NET / C#
   File: `../../StackUpgrade/stack-upgrade-fix.dotnet.prompt.md`
   Detect: `*.csproj`, `*.sln`, `global.json`, `Directory.Packages.props`
+- `stack-upgrade-fix-express` — Express / Node.js backend
+  File: `../../StackUpgrade/stack-upgrade-fix.express.prompt.md`
+  Detect: `express` in `package.json` and no higher-level framework (Nest) wrapping it
 - `stack-upgrade-fix-nestjs` — NestJS backend
   File: `../../StackUpgrade/stack-upgrade-fix.nestjs.prompt.md`
   Detect: `nest-cli.json` or `@nestjs/core` in `package.json`
@@ -344,4 +356,4 @@ Variants:
   File: `../../StackUpgrade/stack-upgrade-fix.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
 
-Related across the family: `stack-upgrade-audit-dotnet`, `post-milestone-audit-dotnet`
+Related across the family: `stack-upgrade-audit-cra`, `stack-upgrade-audit-nextjs`, `post-milestone-audit-nextjs`

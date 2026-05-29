@@ -322,6 +322,10 @@ Audits:
 
 - `stack-upgrade-audit.nextjs.prompt.md` — Next.js version bumps.
 - `stack-upgrade-audit.nestjs.prompt.md` — NestJS major upgrades.
+- `stack-upgrade-audit.express.prompt.md` — Express major (4 → 5) +
+  Node.js runtime bumps.
+- `stack-upgrade-audit.cra.prompt.md` — Create React App: bump in
+  place or migrate off the deprecated `react-scripts` (Vite / Next.js).
 - `stack-upgrade-audit.python.prompt.md` — Python language version
   (3.x → 3.y).
 - `stack-upgrade-audit.dotnet.prompt.md` — .NET TFM (6 → 8, 8 → 9, …).
@@ -338,6 +342,8 @@ categories, commits per category, local only.
 
 - `stack-upgrade-fix.nextjs.prompt.md`
 - `stack-upgrade-fix.nestjs.prompt.md`
+- `stack-upgrade-fix.express.prompt.md`
+- `stack-upgrade-fix.cra.prompt.md`
 - `stack-upgrade-fix.python.prompt.md`
 - `stack-upgrade-fix.dotnet.prompt.md`
 - `stack-upgrade-fix.react-native.prompt.md`

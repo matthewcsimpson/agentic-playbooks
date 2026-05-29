@@ -204,9 +204,15 @@ This file is generated from the prompts' YAML frontmatter by
 
 ### StackUpgrade
 
+- **stack-upgrade-audit-cra** — Plan a Create React App upgrade — decide bump-in-place vs. migrate off CRA (Vite / Next.js), scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
+  Read: `StackUpgrade/stack-upgrade-audit.cra.prompt.md`
+  Related: `stack-upgrade-fix-cra`
 - **stack-upgrade-audit-dotnet** — Plan a .NET TFM upgrade (e.g. .NET 6 → 8, 8 → 9) — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
   Read: `StackUpgrade/stack-upgrade-audit.dotnet.prompt.md`
   Related: `stack-upgrade-fix-dotnet`
+- **stack-upgrade-audit-express** — Plan an Express major and/or Node.js runtime upgrade — read release notes, scan for affected patterns (route syntax, removed APIs), survey middleware co-bumps, produce a risk-ranked migration plan.
+  Read: `StackUpgrade/stack-upgrade-audit.express.prompt.md`
+  Related: `stack-upgrade-fix-express`
 - **stack-upgrade-audit-nestjs** — Plan a NestJS major version upgrade — read release notes, scan for affected patterns, survey codemods, produce a risk-ranked migration plan.
   Read: `StackUpgrade/stack-upgrade-audit.nestjs.prompt.md`
   Related: `stack-upgrade-fix-nestjs`
@@ -225,9 +231,15 @@ This file is generated from the prompts' YAML frontmatter by
 - **stack-upgrade-audit-terraform** — Plan a Terraform / OpenTofu CLI or major provider upgrade (e.g. AWS provider 4 → 5) — read release notes, scan for patterns, produce a risk-ranked migration plan.
   Read: `StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Related: `stack-upgrade-fix-terraform`
+- **stack-upgrade-fix-cra** — Action findings from stack-upgrade-audit-cra. Either bump React + react-scripts in place, or run the migration off CRA (Vite / Next.js) the audit chose. Verify build, commit per category. Local only.
+  Read: `StackUpgrade/stack-upgrade-fix.cra.prompt.md`
+  Related: `stack-upgrade-audit-cra`, `stack-upgrade-audit-nextjs`, `post-milestone-audit-nextjs`
 - **stack-upgrade-fix-dotnet** — Action findings from stack-upgrade-audit-dotnet. Run dotnet upgrade-assistant where applicable, apply mechanical edits, bump TFM, verify build, commit per project. Local only.
   Read: `StackUpgrade/stack-upgrade-fix.dotnet.prompt.md`
   Related: `stack-upgrade-audit-dotnet`, `post-milestone-audit-dotnet`
+- **stack-upgrade-fix-express** — Action findings from stack-upgrade-audit-express. Apply mechanical edits (route paths, removed APIs), bump express + Node engines + middleware, verify build, commit per category. Local only.
+  Read: `StackUpgrade/stack-upgrade-fix.express.prompt.md`
+  Related: `stack-upgrade-audit-express`
 - **stack-upgrade-fix-nestjs** — Action findings from stack-upgrade-audit-nestjs. Apply mechanical breaking-change edits, bump @nestjs/* packages, verify build, commit per category. Local only.
   Read: `StackUpgrade/stack-upgrade-fix.nestjs.prompt.md`
   Related: `stack-upgrade-audit-nestjs`, `post-milestone-audit-nestjs`
