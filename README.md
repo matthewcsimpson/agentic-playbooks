@@ -131,6 +131,13 @@ That produces `<target>/.cursor/commands/playbook.md` (and the Copilot
 equivalent — see the next section). Open that project in Cursor and
 `/playbook` will resolve correctly.
 
+`--install-project` also adds `.playbook-audits/` to the target
+project's `.gitignore` (creating it if absent, idempotent if already
+present) so the working reports the audit playbooks write there stay
+out of git from install time. The audit prompts still add the entry
+on first run too, so global Claude Code / Codex users are covered
+without an `--install-project` step.
+
 Re-run `--install-project` after `git pull` in the playbooks repo, or
 if you move the playbooks clone — the router carries baked-in
 absolute paths. To remove it, delete
@@ -322,6 +329,10 @@ Audits:
 
 - `stack-upgrade-audit.nextjs.prompt.md` — Next.js version bumps.
 - `stack-upgrade-audit.nestjs.prompt.md` — NestJS major upgrades.
+- `stack-upgrade-audit.express.prompt.md` — Express major (4 → 5) +
+  Node.js runtime bumps.
+- `stack-upgrade-audit.cra.prompt.md` — Create React App: bump in
+  place or migrate off the deprecated `react-scripts` (Vite / Next.js).
 - `stack-upgrade-audit.python.prompt.md` — Python language version
   (3.x → 3.y).
 - `stack-upgrade-audit.dotnet.prompt.md` — .NET TFM (6 → 8, 8 → 9, …).
@@ -338,6 +349,8 @@ categories, commits per category, local only.
 
 - `stack-upgrade-fix.nextjs.prompt.md`
 - `stack-upgrade-fix.nestjs.prompt.md`
+- `stack-upgrade-fix.express.prompt.md`
+- `stack-upgrade-fix.cra.prompt.md`
 - `stack-upgrade-fix.python.prompt.md`
 - `stack-upgrade-fix.dotnet.prompt.md`
 - `stack-upgrade-fix.react-native.prompt.md`

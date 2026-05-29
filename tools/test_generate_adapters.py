@@ -258,6 +258,36 @@ class InstallProjectTests(unittest.TestCase):
                 gen.install_project(self._prompts(), target)
             self.assertFalse((target / ".github" / "copilot-instructions.md").exists())
 
+    def test_adds_playbook_audits_to_gitignore_when_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)
+            with contextlib.redirect_stdout(io.StringIO()):
+                gen.install_project(self._prompts(), target)
+            gitignore = target / ".gitignore"
+            self.assertTrue(gitignore.exists())
+            self.assertIn(".playbook-audits/", gitignore.read_text().splitlines())
+
+    def test_appends_playbook_audits_preserving_existing_gitignore(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)
+            (target / ".gitignore").write_text("node_modules/\n*.log\n")
+            with contextlib.redirect_stdout(io.StringIO()):
+                gen.install_project(self._prompts(), target)
+            lines = (target / ".gitignore").read_text().splitlines()
+            self.assertIn("node_modules/", lines)
+            self.assertIn("*.log", lines)
+            self.assertIn(".playbook-audits/", lines)
+
+    def test_does_not_duplicate_existing_playbook_audits_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)
+            # Pre-existing entry without trailing slash should still count.
+            (target / ".gitignore").write_text("foo\n.playbook-audits\nbar\n")
+            with contextlib.redirect_stdout(io.StringIO()):
+                gen.install_project(self._prompts(), target)
+            text = (target / ".gitignore").read_text()
+            self.assertEqual(text.count(".playbook-audits"), 1)
+
     def test_refuses_to_install_into_playbooks_repo_itself(self) -> None:
         with self.assertRaises(SystemExit):
             gen.install_project(self._prompts(), gen.REPO_ROOT)
