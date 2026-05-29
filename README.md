@@ -131,6 +131,13 @@ That produces `<target>/.cursor/commands/playbook.md` (and the Copilot
 equivalent — see the next section). Open that project in Cursor and
 `/playbook` will resolve correctly.
 
+`--install-project` also adds `.playbook-audits/` to the target
+project's `.gitignore` (creating it if absent, idempotent if already
+present) so the working reports the audit playbooks write there stay
+out of git from install time. The audit prompts still add the entry
+on first run too, so global Claude Code / Codex users are covered
+without an `--install-project` step.
+
 Re-run `--install-project` after `git pull` in the playbooks repo, or
 if you move the playbooks clone — the router carries baked-in
 absolute paths. To remove it, delete

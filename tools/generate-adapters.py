@@ -72,6 +72,33 @@ def write(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+# Audit prompts write their working reports to `.playbook-audits/`. The
+# prompts append this to `.gitignore` on first run, but installing the
+# playbooks into a project is the natural moment to do it proactively —
+# so the artefacts never land in `git status` even before the first audit.
+AUDIT_ARTEFACT_GITIGNORE_ENTRY = ".playbook-audits/"
+
+
+def ensure_gitignore_entry(target: Path, entry: str = AUDIT_ARTEFACT_GITIGNORE_ENTRY) -> bool:
+    """Ensure `entry` is present in `target/.gitignore`.
+
+    Creates `.gitignore` if absent, appends `entry` if missing, and is a
+    no-op if an equivalent entry (ignoring a trailing slash) already
+    exists. Returns True if the file was created or modified.
+    """
+    gitignore = target / ".gitignore"
+    wanted = entry.rstrip("/")
+    if gitignore.exists():
+        text = gitignore.read_text(encoding="utf-8")
+        if any(line.strip().rstrip("/") == wanted for line in text.splitlines()):
+            return False
+        sep = "" if text == "" or text.endswith("\n") else "\n"
+        gitignore.write_text(f"{text}{sep}{entry}\n", encoding="utf-8")
+    else:
+        gitignore.write_text(f"{entry}\n", encoding="utf-8")
+    return True
+
+
 # Detection signals for multi-variant collections. Keys are the variant tokens
 # that appear after the family name in a prompt filename
 # (e.g. `dependency-audit.npm.prompt.md` → variant `npm`).
@@ -625,6 +652,10 @@ def install_project(prompts: list[Prompt], target: Path) -> None:
     The `.github/copilot-instructions.md` catalog is deliberately not
     written — target projects often have hand-written Copilot
     instructions and we don't want to clobber them.
+
+    Also ensures `.playbook-audits/` is in the project's `.gitignore`,
+    so the working reports the audit prompts write there stay out of
+    git from install time onward.
     """
     target = target.expanduser().resolve()
     if not target.is_dir():
@@ -643,10 +674,18 @@ def install_project(prompts: list[Prompt], target: Path) -> None:
     copilot_file = target / ".github" / "prompts" / "playbook.prompt.md"
     write(copilot_file, render_copilot_router(prompts, absolute_root=absolute_root, depth=0))
 
+    gitignore_changed = ensure_gitignore_entry(target)
+    gitignore_note = (
+        f"  Gitignore:       added {AUDIT_ARTEFACT_GITIGNORE_ENTRY} to {target / '.gitignore'}\n"
+        if gitignore_changed
+        else f"  Gitignore:       {AUDIT_ARTEFACT_GITIGNORE_ENTRY} already ignored\n"
+    )
+
     print(
         f"generate-adapters: installed project-local routers\n"
         f"  Cursor router:   {cursor_file}\n"
         f"  Copilot router:  {copilot_file}\n"
+        f"{gitignore_note}"
         f"\n"
         f"  Source prompts:  {absolute_root}\n"
         f"\n"
