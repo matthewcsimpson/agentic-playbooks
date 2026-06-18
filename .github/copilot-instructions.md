@@ -146,9 +146,12 @@ This file is generated from the prompts' YAML frontmatter by
 - **post-milestone-audit-terraform** — Audit a Terraform infrastructure-as-code repo after a milestone tag is cut — drift, regressions, extraction signals, and convention compliance.
   Read: `MilestoneAudit/post-milestone-audit.terraform.prompt.md`
   Related: `post-milestone-fix`
+- **post-milestone-audit-vite** — Audit a Vite + React (client-rendered SPA) + TypeScript codebase after a milestone tag is cut — drift, regressions, extraction signals, and convention compliance.
+  Read: `MilestoneAudit/post-milestone-audit.vite.prompt.md`
+  Related: `post-milestone-fix`
 - **post-milestone-fix** — Action the in-scope findings from the most recent post-milestone audit report. Commits locally; does not push or open a PR.
   Read: `MilestoneAudit/post-milestone-fix.prompt.md`
-  Related: `post-milestone-audit-dotnet`, `post-milestone-audit-nestjs`, `post-milestone-audit-nextjs`, `post-milestone-audit-python`, `post-milestone-audit-react-native`, `post-milestone-audit-swift`, `post-milestone-audit-terraform`
+  Related: `post-milestone-audit-dotnet`, `post-milestone-audit-nestjs`, `post-milestone-audit-nextjs`, `post-milestone-audit-python`, `post-milestone-audit-react-native`, `post-milestone-audit-swift`, `post-milestone-audit-terraform`, `post-milestone-audit-vite`
 
 ### MilestoneSmoke
 
@@ -231,6 +234,9 @@ This file is generated from the prompts' YAML frontmatter by
 - **stack-upgrade-audit-terraform** — Plan a Terraform / OpenTofu CLI or major provider upgrade (e.g. AWS provider 4 → 5) — read release notes, scan for patterns, produce a risk-ranked migration plan.
   Read: `StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Related: `stack-upgrade-fix-terraform`
+- **stack-upgrade-audit-vite** — Plan a Vite major upgrade (e.g. 4 → 5, 5 → 6, 6 → 7) — read release notes, scan for affected config / plugin / env patterns, survey migration tooling, produce a risk-ranked plan.
+  Read: `StackUpgrade/stack-upgrade-audit.vite.prompt.md`
+  Related: `stack-upgrade-fix-vite`, `post-milestone-audit-vite`
 - **stack-upgrade-fix-cra** — Action findings from stack-upgrade-audit-cra. Either bump React + react-scripts in place, or run the migration off CRA (Vite / Next.js) the audit chose. Verify build, commit per category. Local only.
   Read: `StackUpgrade/stack-upgrade-fix.cra.prompt.md`
   Related: `stack-upgrade-audit-cra`, `stack-upgrade-audit-nextjs`, `post-milestone-audit-nextjs`
@@ -258,3 +264,6 @@ This file is generated from the prompts' YAML frontmatter by
 - **stack-upgrade-fix-terraform** — Action findings from stack-upgrade-audit-terraform. Apply provider / module bumps, run terraform 0.13upgrade where applicable, plan, commit per category. Local only.
   Read: `StackUpgrade/stack-upgrade-fix.terraform.prompt.md`
   Related: `stack-upgrade-audit-terraform`, `post-milestone-audit-terraform`
+- **stack-upgrade-fix-vite** — Action findings from stack-upgrade-audit-vite. Apply config edits, bump vite + framework plugin + vitest + Node engines together, verify via vite build, commit per category. Local only.
+  Read: `StackUpgrade/stack-upgrade-fix.vite.prompt.md`
+  Related: `stack-upgrade-audit-vite`, `post-milestone-audit-vite`

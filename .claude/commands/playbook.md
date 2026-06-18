@@ -109,7 +109,7 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
   Related: `observability-audit`
 - **`post-milestone-fix`** — Action the in-scope findings from the most recent post-milestone audit report. Commits locally; does not push or open a PR.
   File: `../../MilestoneAudit/post-milestone-fix.prompt.md`
-  Related: `post-milestone-audit-dotnet`, `post-milestone-audit-nestjs`, `post-milestone-audit-nextjs`, `post-milestone-audit-python`, `post-milestone-audit-react-native`, `post-milestone-audit-swift`, `post-milestone-audit-terraform`
+  Related: `post-milestone-audit-dotnet`, `post-milestone-audit-nestjs`, `post-milestone-audit-nextjs`, `post-milestone-audit-python`, `post-milestone-audit-react-native`, `post-milestone-audit-swift`, `post-milestone-audit-terraform`, `post-milestone-audit-vite`
 - **`post-milestone-smoke-fix`** — Action ❌ Fail findings from the most recent post-milestone smoke-test report. Commits locally; does not push or open a PR.
   File: `../../MilestoneSmoke/post-milestone-smoke-fix.prompt.md`
   Related: `post-milestone-smoke-test-api`, `post-milestone-smoke-test-cli`, `post-milestone-smoke-test-ios`, `post-milestone-smoke-test-web`
@@ -270,6 +270,9 @@ Variants:
 - `post-milestone-audit-terraform` — Terraform / OpenTofu
   File: `../../MilestoneAudit/post-milestone-audit.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
+- `post-milestone-audit-vite` — Vite + React (client-rendered SPA)
+  File: `../../MilestoneAudit/post-milestone-audit.vite.prompt.md`
+  Detect: `vite.config.{ts,js,mjs}`, `vite` in `package.json`, root `index.html` with `<script type="module" src="/src/main">`, and no Next.js / `react-scripts`
 
 Related across the family: `post-milestone-fix`
 
@@ -321,6 +324,9 @@ Variants:
 - `stack-upgrade-audit-terraform` — Terraform / OpenTofu
   File: `../../StackUpgrade/stack-upgrade-audit.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
+- `stack-upgrade-audit-vite` — Vite + React (client-rendered SPA)
+  File: `../../StackUpgrade/stack-upgrade-audit.vite.prompt.md`
+  Detect: `vite.config.{ts,js,mjs}`, `vite` in `package.json`, root `index.html` with `<script type="module" src="/src/main">`, and no Next.js / `react-scripts`
 
 Related across the family: `stack-upgrade-fix-cra`
 
@@ -355,5 +361,8 @@ Variants:
 - `stack-upgrade-fix-terraform` — Terraform / OpenTofu
   File: `../../StackUpgrade/stack-upgrade-fix.terraform.prompt.md`
   Detect: `*.tf`, `*.tofu`
+- `stack-upgrade-fix-vite` — Vite + React (client-rendered SPA)
+  File: `../../StackUpgrade/stack-upgrade-fix.vite.prompt.md`
+  Detect: `vite.config.{ts,js,mjs}`, `vite` in `package.json`, root `index.html` with `<script type="module" src="/src/main">`, and no Next.js / `react-scripts`
 
 Related across the family: `stack-upgrade-audit-cra`, `stack-upgrade-audit-nextjs`, `post-milestone-audit-nextjs`

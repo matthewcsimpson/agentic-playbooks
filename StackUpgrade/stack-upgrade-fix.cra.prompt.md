@@ -200,8 +200,12 @@ root route is the gate — a typecheck pass does not prove the
 - **Fork B → Next.js**: run `/playbook post-milestone-audit-nextjs`
   to catch Next-specific drift, then `/playbook stack-upgrade-audit-nextjs`
   if a further Next version bump is wanted.
-- **Fork A or Fork B → Vite**: there's no CRA/Vite post-milestone
-  variant. Run the generic catchers:
+- **Fork B → Vite**: run `/playbook post-milestone-audit-vite` to
+  catch SPA-specific drift (env prefix / `import.meta.env`, routing,
+  code-splitting), then the generic catchers below. If a later Vite
+  major bump is wanted, `/playbook stack-upgrade-audit-vite`.
+- **Fork A (stayed on CRA)**: there's no `react-scripts`-specific
+  post-milestone variant. Run the generic catchers:
 
 ```
 /playbook doc-code-drift-audit             # README scripts, env var names, node version

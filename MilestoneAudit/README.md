@@ -12,6 +12,7 @@ the top of this folder; the shared scaffold lives in `core/`.
 | Step | Prompt | Scope |
 |---|---|---|
 | 1 | `post-milestone-audit.nextjs.prompt.md` | Next.js + TypeScript |
+| 1 | `post-milestone-audit.vite.prompt.md` | Vite + React (client-rendered SPA) + TypeScript |
 | 1 | `post-milestone-audit.nestjs.prompt.md` | NestJS (backend TS services) |
 | 1 | `post-milestone-audit.python.prompt.md` | Python (FastAPI / Django / Flask / CLI / library) |
 | 1 | `post-milestone-audit.dotnet.prompt.md` | .NET / C# (ASP.NET Core, EF Core, worker services) |
@@ -39,6 +40,9 @@ the top of this folder; the shared scaffold lives in `core/`.
 
 - **Next.js + TypeScript** (web front-end / SSR):
   `post-milestone-audit.nextjs.prompt.md`.
+- **Vite + React** (client-rendered SPA, TypeScript — includes a
+  Create React App project migrated onto Vite):
+  `post-milestone-audit.vite.prompt.md`.
 - **NestJS** (TypeScript backend):
   `post-milestone-audit.nestjs.prompt.md`.
 - **Python** (FastAPI / Django / Flask / CLI / library):
