@@ -123,6 +123,8 @@ VARIANT_SIGNALS: dict[str, tuple[str, list[str]]] = {
                      ["`express` in `package.json` and no higher-level framework (Nest) wrapping it"]),
     "cra":          ("Create React App (react-scripts)",
                      ["`react-scripts` in `package.json`, `public/index.html` with `%PUBLIC_URL%`, `REACT_APP_` env vars"]),
+    "vite":         ("Vite + React (client-rendered SPA)",
+                     ["`vite.config.{ts,js,mjs}`, `vite` in `package.json`, root `index.html` with `<script type=\"module\" src=\"/src/main\">`, and no Next.js / `react-scripts`"]),
     "alembic":      ("Alembic (Python + SQLAlchemy migrations)",
                      ["`alembic.ini`, `alembic/` directory"]),
     "ef-core":      ("Entity Framework Core (.NET)",

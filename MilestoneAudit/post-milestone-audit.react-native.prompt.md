@@ -34,9 +34,9 @@ first, then this variant.
 - **Build / package**: pnpm / npm / yarn; if Expo, also `expo-cli`
   and EAS Build.
 
-For Next.js front-end work see `.nextjs`. For pure React-web work
-(SPA, Vite, CRA) the `.nextjs` variant's React patterns largely
-apply — fall back to that and skip the Next.js-specific bits.
+For Next.js front-end work see `.nextjs`. For client-rendered
+React-web work (Vite / CRA SPA) see `.vite` — it carries the
+SPA-specific env, routing, and code-splitting checks.
 
 ---
 

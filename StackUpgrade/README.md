@@ -40,6 +40,7 @@ plan    execute    drift cleanup
 | NestJS | `stack-upgrade-audit.nestjs.prompt.md` | `stack-upgrade-fix.nestjs.prompt.md` |
 | Express / Node.js | `stack-upgrade-audit.express.prompt.md` | `stack-upgrade-fix.express.prompt.md` |
 | Create React App | `stack-upgrade-audit.cra.prompt.md` | `stack-upgrade-fix.cra.prompt.md` |
+| Vite | `stack-upgrade-audit.vite.prompt.md` | `stack-upgrade-fix.vite.prompt.md` |
 | Python | `stack-upgrade-audit.python.prompt.md` | `stack-upgrade-fix.python.prompt.md` |
 | .NET | `stack-upgrade-audit.dotnet.prompt.md` | `stack-upgrade-fix.dotnet.prompt.md` |
 | React Native / Expo | `stack-upgrade-audit.react-native.prompt.md` | `stack-upgrade-fix.react-native.prompt.md` |
@@ -79,6 +80,7 @@ Pick the variant matching the version you're upgrading:
 - **NestJS 9 → 10**: `stack-upgrade-audit.nestjs` → `stack-upgrade-fix.nestjs`.
 - **Express 4 → 5 / Node 18 → 20**: `stack-upgrade-audit.express` → `stack-upgrade-fix.express`. Covers the Express major and the Node runtime bump together (Express majors raise the Node minimum).
 - **Create React App** (bump React in place, or migrate off the deprecated `react-scripts` to Vite / Next.js): `stack-upgrade-audit.cra` → `stack-upgrade-fix.cra`. The audit decides bump-in-place vs. migrate-off before cataloguing.
+- **Vite 5 → 6 / 6 → 7** (a project already on Vite): `stack-upgrade-audit.vite` → `stack-upgrade-fix.vite`. Co-bumps the framework plugin and Vitest, which are locked to the Vite major. To migrate *onto* Vite from CRA, use the `cra` variant instead.
 - **React Native 0.72 → 0.74** (or Expo SDK 49 → 51): `stack-upgrade-audit.react-native` → `stack-upgrade-fix.react-native`.
 - **Swift 5 → 6 / Xcode 15 → 16 / iOS 17 → 18**: `stack-upgrade-audit.swift` → `stack-upgrade-fix.swift`.
 - **Terraform 1.5 → 1.10 / AWS provider 4 → 5**: `stack-upgrade-audit.terraform` → `stack-upgrade-fix.terraform`.
