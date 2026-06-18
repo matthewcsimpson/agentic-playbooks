@@ -652,7 +652,34 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Status
 
-Stable at [v1.6.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.6.0).
+Stable at [v1.7.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.7.0).
+v1.7.0 adds Vite + React SPA coverage and rounds out the React
+build-toolchain set. New `post-milestone-audit-vite` audits a
+client-rendered Vite + React SPA (TypeScript) after a milestone —
+its checks centre on the SPA-specific surface the other variants
+miss: `import.meta.env.VITE_*` env exposure (including the
+secret-leak class, where a `VITE_`-prefixed value is inlined into
+the shipped bundle), `process.env` misuse in client code,
+`tsconfig` ↔ Vite `resolve.alias` drift, route-level
+code-splitting, and Vitest / RTL conventions; the fix side is the
+shared stack-agnostic `post-milestone-fix`. New
+`stack-upgrade-audit-vite` / `stack-upgrade-fix-vite` plan and
+action a Vite major upgrade (5 → 6 → 7) for a project already on
+Vite — emphasising the lock-step `vite` + `@vitejs/plugin-react` +
+`vitest` co-bump, the Node-baseline raise, the no-codemod reality
+(manual edits driven by the migration guide and build warnings),
+and the silent → 7 `build.target` default change. Also since
+v1.6.0: `stack-upgrade-{audit,fix}-express` (Express major + Node
+runtime bump) and `stack-upgrade-{audit,fix}-cra` (Create React App
+bump-in-place vs. migrate-off to Vite / Next.js), and milestone /
+upgrade audit reports now carry a `YYYYMMDDTHHMMSS` timestamp
+suffix so reruns accumulate an ordered history instead of
+overwriting. The `react-native` milestone variant now redirects
+client-rendered React-web work to `.vite` rather than `.nextjs`,
+and the CRA fix's Fork B → Vite hand-off routes to
+`post-milestone-audit-vite`, closing a gap it previously
+documented. Catalog grew from 65 to 72 playbooks.
+
 v1.6.0 completes the `StackUpgrade/` collection's audit / fix pair
 convention. The existing `stack-upgrade-<framework>` family is renamed
 to `stack-upgrade-audit-<framework>` (it was the only planner-style
