@@ -1,195 +1,172 @@
 ---
-description: Generate a well-formed agent / LLM instructions file from scratch — derived from the actual codebase and recent PRs. Writes a canonical AGENTS.md and points each tool's file at it.
+description: Set up a project's agent / LLM instructions at project start — interview for stack and convention preferences (opinionated defaults), write a canonical AGENTS.md, and point each tool's file at it.
 related: [agent-instructions-audit, agent-instructions-fix]
 ---
 
 # Initialise agent instructions
 
-Generate a well-formed agent / LLM instructions file for this project
-**from evidence** — the actual stack, conventions, and recent PRs —
-rather than generic boilerplate. Write one **canonical** file
-(`AGENTS.md` by default), then point every other tool's instruction
-file (`CLAUDE.md`, Cursor rules, Copilot instructions, …) at it so the
-project keeps a single source of truth.
+Set up a project's agent / LLM instructions at the **start** of a
+project by interviewing the user for their stack and convention
+**preferences**, then writing a well-formed canonical `AGENTS.md` from
+the answers and pointing every other tool's instruction file
+(`CLAUDE.md`, Cursor rules, Copilot instructions, …) at it.
 
-This is the greenfield counterpart to the `agent-instructions-audit` /
-`agent-instructions-fix` pair: audit grades an existing file and fix
-actions the findings; this one **creates the file** that doesn't exist
-yet. Unlike a tool's built-in `/init`, this prompt is project-agnostic,
-derives every rule from something it observed in the repo, and wires up
-all the agent tools the project actually uses.
+This is preference-*setting*, run up front — distinct from
+`agent-instructions-audit`, which reads an **existing** file and the
+code to see how well the documented rules are holding up. `init` asks
+what you *want* the project's conventions to be; the audit observes what
+they actually are. Use `init` to establish the rules; later, once real
+code exists, use the audit / fix pair to keep them honest.
 
-## Inputs
+## How to ask (interaction model)
 
-Ask for these up front unless the user already supplied them. None are
-load-bearing enough to block on if the user says "just pick sensible
-defaults" — state your choices and proceed.
+- **Batch questions by topic**, and give each one an **opinionated,
+  stack-aware recommended default** so the user can move fast. Phrase
+  them as "Recommended: `<X>` — accept, or tell me otherwise."
+- Offer an **"accept all recommended defaults" fast path** up front. If
+  the user takes it, skip straight to writing the file with the
+  recommended answers and let them review the result — but still record
+  each answer's provenance as a *default* (not an explicit choice) so the
+  report (Step 6) can show the user what to revisit.
+- Only ask about dimensions **relevant to the chosen stack** — don't ask
+  about JSX component naming for a Go service.
+- Keep it tight. This is a setup wizard, not an exam.
 
-1. **Canonical file** — the single source of truth. Default `AGENTS.md`
-   (the emerging cross-tool standard). Offer `CLAUDE.md` instead if
-   Claude Code is the user's primary or only tool.
-2. **Which agent tools the project uses** — drives which pointer files
-   to create. Offer the set this repo's audit detects: Claude Code
-   (`CLAUDE.md`), Cursor (`.cursor/rules/`), GitHub Copilot
-   (`.github/copilot-instructions.md`), Cline, Aider (`CONVENTIONS.md`),
-   Gemini (`GEMINI.md`), Windsurf, and others. Auto-detect likely tools
-   from the repo (Step 1) and confirm rather than asking cold.
-3. **Pointer vs full copy**, per non-canonical tool. Pointer-aware
-   tools (Claude Code, Cursor's agent mode, …) default to **pointers**
-   — one source of truth. But **static readers** that load rules
-   verbatim and won't chase a link **default to a full copy**, because a
-   pointer would leave them effectively rule-less. Treat GitHub Copilot
-   (`.github/copilot-instructions.md`) and Cursor's static rule loading
-   as static readers by default. Surface this choice per tool rather
-   than burying it: state which tools you'll point and which you'll copy,
-   and note that any full copy drifts from the canonical unless kept in
-   sync. Let the user override either way.
+## Step 1 — Detect stack and existing files
 
-## Step 1 — Detect existing instruction files
+Even though `init` is preference-driven, look first so the questions are
+informed:
 
-Before generating anything, find what already exists. Use the same
-detection heuristics as `agent-instructions-audit` Step 1:
+- **Detect the stack** from any manifests already present
+  (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `*.csproj`,
+  `Gemfile`, …) and task runners (`Makefile`, `justfile`, npm scripts).
+  Use what you find to **prefill suggested commands** and to tailor
+  which questions are relevant. If no manifest exists yet, **ask** the
+  user what stack they're starting.
+- **Detect existing instruction files** using the same heuristics as
+  `agent-instructions-audit` Step 1 (tool-specific canonical paths +
+  pattern catch-all), and **skip auto-generated files** — a file is
+  generated only when a marker sits in its **top region** (frontmatter,
+  leading HTML comment, or leading blockquote — not body prose) **and**
+  matches a strict phrase (`@generated`, `<!-- generated -->`,
+  `<!-- AUTO-GENERATED -->`, `<!-- DO NOT EDIT -->`,
+  `THIS FILE IS GENERATED`/`AUTOGENERATED`, or YAML `generated: true`).
+  Never target a generated file as canonical.
 
-**Tool-specific canonical paths:** `CLAUDE.md` (root and nested),
-`AGENTS.md` (root and nested), `.github/copilot-instructions.md`,
-`.github/instructions/**/*.md`, `.cursor/rules/**/*.{md,mdc}` and
-`.cursorrules`, `.clinerules` and `cline_docs/**/*.md`, `CONVENTIONS.md`.
+  Then branch:
+  - **A hand-authored instruction file already exists → merge / augment.**
+    Read it and treat its existing rules as the user's *current*
+    preferences. In the interview, ask only about gaps and anything you
+    propose changing — don't re-ask what the file already settles. Never
+    silently drop or rewrite an existing rule; surface any change in the
+    report with the reason.
+  - **No instruction files exist → fresh setup** (interview from
+    scratch). This holds **even when substantial source code already
+    exists** — `init` still *asks* the user for their preferences; it
+    does **not** switch to deriving rules by reading the code. Observing
+    what the code already does is the audit's job, not init's. (After
+    init, recommend running the audit to check the new rules against the
+    existing code.)
 
-**Pattern-based catch-all** (use judgment — include any file that plainly
-addresses an AI agent): root `*.md` named after an LLM tool (`GEMINI.md`,
-`JULES.md`, `WINDSURF.md`, …), tool-specific dotfile rules
-(`.<tool>rules`, `.<tool>-guidelines`), and tool-specific config
-directories (`.<tool>/` containing rule-like `*.md`).
+## Step 2 — Interview the user
 
-**Skip auto-generated files.** A file is generated only when a marker
-appears in its **top region** (frontmatter, leading HTML comment, or
-leading blockquote — not body prose) **and** matches a strict phrase
-(`@generated`, `<!-- generated -->`, `<!-- AUTO-GENERATED -->`,
-`<!-- DO NOT EDIT -->`, `THIS FILE IS GENERATED`/`AUTOGENERATED`, or
-YAML `generated: true`). Never target a generated file as canonical —
-the next regeneration overwrites it. (This repo's own `AGENTS.md` is
-generated by `tools/generate-adapters.py` — a good example of the trap.)
+Walk these topics, **batched**, each with a recommended stack-aware
+default. Record the user's answer (or the accepted default) for each.
+**Skip any topic that doesn't apply to the stack**, and in merge mode
+skip whatever the existing file already settles.
 
-Then branch:
+Convention dimensions (the dimensions are stack-agnostic; the
+recommended defaults and final rules follow the chosen stack):
 
-- **A hand-authored instruction file already exists → merge / augment
-  mode.** Do not start blank and do not clobber. Read every existing
-  file, carry its rules forward, restructure into the target shape
-  (Step 4), and fill the gaps you find in Step 2. If you drop or rewrite
-  any existing rule, **say so explicitly** in the report with the reason
-  — never silently discard a rule someone wrote on purpose. If an
-  existing file is already in good shape, recommend
-  `/playbook agent-instructions-audit` instead of regenerating it.
-- **No instruction files exist → fresh generation.** Proceed to Step 2.
+- **Stack & commands** — confirm the detected stack; settle the
+  **build / test / run / lint / typecheck** commands. Prefill from
+  manifests where present; ask where not. (Highest-value content — get
+  them exact.)
+- **Language / spelling** — locale / spelling standard for identifiers,
+  comments, and strings (e.g. American vs British / Canadian English).
+- **Naming** — files, directories, identifiers, types / classes,
+  constants, test files.
+- **File & directory layout / colocation** — including **where test
+  files live** (colocated beside source vs a top-level `tests/`), and
+  where styles / types / helpers sit relative to what they support.
+- **Module boundaries / where code lives** — placement rules (pure vs
+  platform-bound, when to promote shared code).
+- **Import style** — path aliases vs relative, ordering, barrel files.
+- **Function / declaration style** — e.g. arrow vs declaration, when
+  explicit return types are required.
+- **Constants vs magic values** — whether literals (routes, keys,
+  endpoints, status values) must be named constants, and where they live.
+- **Error handling & logging** — propagate vs swallow, log prefixes /
+  levels, what must never be logged.
+- **Comments** — when a comment is expected (issue refs,
+  rationale-over-restatement).
+- **Architecture / where things go** — the intended directory map and
+  the "changing X → look in Y" pointers.
+- **Testing conventions** — framework, what must have coverage, the
+  single-test command.
+- **Commit / PR conventions** — commit message style (e.g. Conventional
+  Commits), branch naming, what CI should gate on.
+- **Tooling / enforcement** — for any rule, capture whether a linter /
+  formatter / type-checker / CI check already (or should) enforce it, so
+  the file can reference the mechanism instead of restating the rule.
 
-## Step 2 — Study the codebase (the core value)
+Then the output-shape questions:
 
-Every rule you write must trace to something you observed. Generic
-advice ("write clean code", "add tests") is noise in an instructions
-file — leave it out.
+- **Canonical file** — default **`AGENTS.md`** (the cross-tool standard
+  the most agents read natively); offer `CLAUDE.md` if Claude Code is the
+  only tool. Never an auto-generated file.
+- **Which agent tools the project uses** — which tools get a file
+  pointing at the canonical. Auto-detect likely ones (a `.cursor/`
+  directory, etc.) and confirm rather than asking cold.
+- **Pointer vs full copy**, per non-canonical tool. Default by how the
+  tool consumes its file:
+  - **Pointer-aware** (Claude Code, and any tool whose agent reads the
+    linked file) → default to a **pointer** (one source of truth).
+  - **Static readers** that load the rule file verbatim and won't chase
+    a link → default to a **full copy**, since a pointer would leave
+    them rule-less. Treat **GitHub Copilot**
+    (`.github/copilot-instructions.md`) and **Cursor**
+    (`.cursor/rules/**`) as static by default — Cursor injects rule
+    files directly.
 
-- **Stack & commands.** Read the manifests (`package.json`,
-  `pyproject.toml`, `Cargo.toml`, `go.mod`, `*.csproj`, `Gemfile`, …) and
-  any task runner (`Makefile`, `Taskfile`, `justfile`, npm scripts) to
-  find the **build / test / run / lint / typecheck** commands. These are
-  the single highest-value thing an agent needs — get them exact.
-- **Code conventions from code.** This is the heart of the file — see
-  Step 4 for how to render it. Sample a representative spread of source
-  files and look for a *consistent* convention along each of these
-  dimensions (the dimensions are stack-agnostic; what you find is
-  whatever the detected stack actually does). Document a rule only where
-  the codebase is consistent enough that an agent could violate it by
-  guessing wrong — skip dimensions where the project has no discernible
-  convention:
-  - **Naming** — files, directories, identifiers, types/classes,
-    constants, test files. (e.g. `snake_case` modules, `PascalCase`
-    components, a section-prefix scheme.)
-  - **Language / spelling** — any enforced locale or spelling convention
-    in identifiers, comments, and strings (e.g. US vs British/Canadian).
-  - **File & directory layout / colocation** — one-thing-per-folder,
-    where tests/styles/types sit relative to the thing they support.
-  - **Module boundaries / where code lives** — the "if it's pure it
-    goes here, if it's platform-bound it goes there" placement rules,
-    and when to promote shared code. Capture the *decision rule*, not
-    just the current layout.
-  - **Import style** — path aliases vs relative, ordering, barrel files.
-  - **Function / declaration style** — arrow vs declaration, explicit
-    return types, where each is required.
-  - **Constants vs magic values** — whether literals (routes, keys,
-    endpoints, status values) must be named constants, and where they
-    live.
-  - **Error handling & logging** — how errors propagate vs swallow, log
-    prefixes/levels, what must never be logged.
-  - **Comments** — when/why a comment is expected (e.g. issue refs,
-    rationale-over-restatement).
-  Note what's *consistent* (a real convention) vs *incidental* — one or
-  two files doing something is not a convention.
-- **Lean on existing config — don't restate it.** If ESLint, Prettier,
-  ruff, gofmt, EditorConfig, etc. already enforce something, **reference
-  the config** ("formatting is enforced by Prettier — run `npm run
-  format`") instead of re-describing the rules it owns. The instructions
-  file should cover what tools *can't* catch.
-- **Recent history.** Read 3–5 recent merged PRs
-  (`gh pr list --state merged --limit 5`, then `gh pr view <n>`) for
-  recurring patterns and review feedback. A correction that shows up
-  across multiple PRs is an undocumented convention worth writing down.
+  Note any full copy drifts from the canonical unless kept in sync, and
+  let the user override either way (e.g. if they rely on a Cursor flow
+  that follows references, a pointer is fine).
 
-## Step 3 — Finalise tool targets
+## Step 3 — Compose the canonical file
 
-You already settled the canonical file and the tool list in Inputs
-(#1–#3) — this step records the final plan, it is not a second round of
-questions. Write down the canonical file plus each other tool's file
-marked **pointer** or **full copy**. Only return to the user if Step 1
-detection surfaced a tool the Inputs answer didn't cover (or named one
-that isn't actually present); otherwise proceed to write.
-
-## Step 4 — Compose the canonical file
-
-Write the canonical file with a deliberate, scannable structure. Keep it
-tight — this is an operating manual for an agent, not a tutorial. A good
-default shape:
+Build the file from the recorded answers, with a deliberate, scannable
+structure. Keep it tight — an operating manual for an agent, not a
+tutorial.
 
 1. **Project overview** — one short paragraph: what this is, the stack.
-2. **Setup / build / test / run** — the exact commands from Step 2. The
-   part agents read first.
-3. **Code conventions** — the substance of the file. Group rules under
-   topic headings (one per discernible dimension from Step 2 — Naming,
-   Imports, Functions, Constants, Error handling, Logging, Comments, …);
-   list only what's relevant to the detected stack and drop the rest.
-   For each rule:
-   - **Make it concrete** — a one-line example or counter-example, the
-     way the audit grades for ("use `X` not `Y`", not "use sensible
-     names").
-   - **Document exceptions inline** — the carve-outs are where agents
-     get it wrong; state them next to the rule.
-   - **Reference the enforcer, don't restate it** — if a linter,
-     formatter, type-checker, or CI check already enforces the rule,
-     name the specific rule/check and the command to run it ("enforced
-     by ESLint `id-length` — run `npm run lint`") instead of
-     re-describing what it owns.
-   - **Add a one-line *why* for non-obvious rules** — the rationale or
-     the incident behind it, so a reader can weigh edge cases.
+2. **Setup / build / test / run** — the settled commands. The part
+   agents read first.
+3. **Code conventions** — the substance of the file. One topic heading
+   per convention the user set (Naming, Imports, Functions, Constants,
+   Error handling, Logging, Comments, …); include only what was settled
+   and drop the rest. For each rule:
+   - **Make it concrete** — a one-line example or counter-example ("use
+     `X` not `Y`", not "use sensible names").
+   - **Document exceptions inline** — carve-outs are where agents get it
+     wrong.
+   - **Reference the enforcer** where one exists or was chosen — name the
+     specific rule / check and the command ("enforced by ESLint
+     `id-length` — run `npm run lint`") instead of restating it.
+   - **One-line *why*** for non-obvious rules.
+4. **Architecture / where things live** — the map from the interview.
+5. **Testing conventions** — including the test-file location the user
+   chose.
+6. **Commit / PR conventions** — from the interview.
+7. **Gotchas / do-not** — anything the user flagged.
 
-   Keep it stack-agnostic in framing but specific in content: the
-   *dimensions* are universal, the *rules* are whatever this project's
-   stack and code actually do. Do not import conventions from other
-   projects or invent rules the codebase doesn't follow.
-4. **Architecture / where things live** — the directory map and the
-   "if you're changing X, look in Y" pointers.
-5. **Testing conventions** — framework, where tests live, how to run a
-   single test, what must have coverage.
-6. **Commit / PR conventions** — derived from observed history (commit
-   message style, branch naming, what CI gates on).
-7. **Gotchas / do-not** — footguns and the recurring PR-review
-   corrections from Step 2.
+Drop any section the user gave nothing for.
 
-Drop any section the project gives you nothing real to put in.
-
-## Step 5 — Write the files
+## Step 4 — Write the files
 
 Write the canonical file. Then, for each selected tool:
 
-- **Pointer** (pointer-aware tools): replace/create the file with the
+- **Pointer** (pointer-aware tools): create / replace the file with the
   repo's established pointer-line convention — keep any required
   top-of-file frontmatter the tool needs, then a single line:
 
@@ -198,54 +175,59 @@ Write the canonical file. Then, for each selected tool:
   ```
 
   No residual sections or "see also" blocks — clean pointer only.
-- **Full copy** (static readers, per Input #3, or where the user chose
+- **Full copy** (static readers, per Step 2, or where the user chose
   it): write the canonical content into that tool's file verbatim, and
   note in the report that it must be kept in sync.
 
-If a target file already exists (merge mode), preserve any
-tool-required frontmatter at its top.
+If a target file already exists (merge mode), preserve any tool-required
+frontmatter at its top.
 
-## Step 6 — Verify
+## Step 5 — Verify
 
 - Re-read the canonical file end to end.
-- Confirm **every command actually exists** in the manifest / scripts —
-  don't ship a `npm run build` that isn't defined. Fabricated commands
-  are the most damaging failure mode here.
-- Mark which rules are **verified** (observed in code/config/PRs) vs
-  **inferred** (a reasonable guess) so the user can confirm the latter.
-- Recommend running `/playbook agent-instructions-audit` on the result
-  to grade it — the round trip catches vague or uncited rules.
+- If a manifest with scripts exists, confirm every command you wrote
+  actually exists in it. On a true-greenfield project where no scripts
+  are defined yet, you can't verify — write the user-supplied (or
+  default) commands but mark them **user-asserted / unverified** in the
+  report rather than claiming they're confirmed. Fabricating a command
+  the user never gave is the most damaging failure mode.
+- Note which rules came from an explicit user answer vs an accepted
+  recommended default, so the user can revisit the defaults.
+- Recommend running `/playbook agent-instructions-audit` once real code
+  exists, to check the rules are actually being followed.
 
-## Step 7 — Report
+## Step 6 — Report
 
-Summarise:
-
-- **Files created/modified** — the canonical file, and each tool file as
+- **Files created / modified** — canonical file + each tool file as
   pointer or full copy.
-- **Mode** — fresh vs merge/augment; in merge mode, list any existing
-  rules dropped or rewritten, with reasons.
-- **Rule provenance** — which rules are verified vs inferred.
-- **Caveats** — any tool that got a full copy (and why), and the
-  sync burden that creates.
-- **Next steps** — review the inferred rules, then audit.
+- **Mode** — fresh vs merge / augment; in merge mode, list any existing
+  rules changed, with reasons.
+- **Answer provenance** — which rules the user set explicitly vs took as
+  a recommended default.
+- **Caveats** — any full copy (and its sync burden); any command that
+  couldn't be verified.
+- **Next steps** — start coding; run the audit later.
 
 Leave all files in the working tree for review. Do **not** commit.
 
 ## Constraints
 
-- **Evidence over boilerplate.** Every rule traces to observed code,
-  config, or PR history. Mark inferences explicitly. Don't invent
-  conventions the project doesn't follow.
-- **Don't restate what a linter / formatter config enforces** —
-  reference the config and the command to run it.
-- **Never clobber a hand-authored file.** Merge/augment mode carries
-  existing rules forward; dropped or rewritten rules are reported, never
-  silent.
+- **This sets preferences — ask, don't assume.** Recommended defaults
+  are suggestions to accept or override, not silent decisions. Where the
+  user has no opinion, the accepted default is fine — but make clear it
+  was a default (record provenance for the report).
+- **Don't fabricate the user's intent.** If the user skips a topic and
+  takes no default, leave that section out rather than inventing a rule.
+- **Don't restate what a linter / formatter enforces** — reference it
+  and the command to run it.
+- **Never clobber a hand-authored file.** Merge / augment carries
+  existing rules forward; changes are reported, never silent.
 - **Don't target a generated file** as canonical (Step 1 skip rules).
-- **Static-reader caveat.** Warn that some tools don't follow pointers;
-  offer a full copy for those and flag the sync burden.
-- **Don't fabricate commands** — verify each against the manifest /
-  scripts before writing it.
-- **Be project-agnostic.** No hard-coded framework, package manager, or
-  repo names unless the project genuinely uses them.
+- **Static-reader caveat.** Static readers default to a full copy, not a
+  pointer; flag the sync burden.
+- **Verify commands** against the manifest where one exists; flag
+  unverifiable ones.
+- **Be project-agnostic.** The question *dimensions* are universal; the
+  recommended defaults and final rules follow the chosen stack. No
+  hard-coded framework names beyond the user's stack.
 - **Generates files for review; does not commit or push.**

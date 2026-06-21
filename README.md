@@ -538,16 +538,17 @@ See [`SEOAudit/README.md`](SEOAudit/README.md).
 
 Audits that keep documentation honest.
 
-- `agent-instructions-init.prompt.md` — generates a well-formed agent
-  / LLM instructions file from scratch, derived from the actual
-  codebase and recent PRs rather than boilerplate. Establishes
-  evidence-backed code-convention rules (naming, imports, layout,
-  constants, error handling, …) grouped by topic, each concrete with
-  examples / exceptions and a pointer to whatever already enforces it.
-  Writes a canonical `AGENTS.md` and points each tool the project uses
-  (CLAUDE.md, Cursor rules, Copilot instructions) at it. Merges into an
-  existing hand-authored file rather than clobbering it. Leaves files
-  for review; does not commit.
+- `agent-instructions-init.prompt.md` — sets up a project's agent /
+  LLM instructions at the start of a project. Interviews the user for
+  stack and convention preferences — naming, layout / test-file
+  location, imports, error handling, commit conventions, and more —
+  with opinionated, stack-aware recommended defaults and an accept-all
+  fast path, then writes a well-formed canonical `AGENTS.md` and points
+  each tool the project uses (CLAUDE.md, Cursor rules, Copilot
+  instructions) at it. Distinct from the audit, which observes existing
+  code: init sets the rules, the audit checks them. Merges into a
+  hand-authored file rather than clobbering. Leaves files for review;
+  does not commit.
 - `agent-instructions-audit.prompt.md` — auto-detects every agent /
   LLM instruction file in the repo (CLAUDE.md, AGENTS.md, Cursor
   rules, Copilot instructions, nested variants) and audits them all

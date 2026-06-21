@@ -78,7 +78,7 @@ summarise, paraphrase, or skip steps unless the playbook itself says to.
 - **`agent-instructions-fix`** — Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to a canonical AGENTS.md. Commit per category. Local.
   File: `../../DocsHygiene/agent-instructions-fix.prompt.md`
   Related: `agent-instructions-audit`, `agent-instructions-init`
-- **`agent-instructions-init`** — Generate a well-formed agent / LLM instructions file from scratch — derived from the actual codebase and recent PRs. Writes a canonical AGENTS.md and points each tool's file at it.
+- **`agent-instructions-init`** — Set up a project's agent / LLM instructions at project start — interview for stack and convention preferences (opinionated defaults), write a canonical AGENTS.md, and point each tool's file at it.
   File: `../../DocsHygiene/agent-instructions-init.prompt.md`
   Related: `agent-instructions-audit`, `agent-instructions-fix`
 - **`dead-code-audit`** — Find code that isn't used — exports never imported, components never rendered, branches never reached, env vars never read, permanently-on/off flags. Read-only.
