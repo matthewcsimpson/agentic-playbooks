@@ -34,12 +34,16 @@ defaults" — state your choices and proceed.
    (`.github/copilot-instructions.md`), Cline, Aider (`CONVENTIONS.md`),
    Gemini (`GEMINI.md`), Windsurf, and others. Auto-detect likely tools
    from the repo (Step 1) and confirm rather than asking cold.
-3. **Pointer vs full copy**, per non-canonical tool — default to
-   **pointers** (one source of truth). Warn that some **static readers**
-   don't follow a pointer to another file (certain Copilot and Cursor
-   setups load rules verbatim and won't chase a link). For those tools,
-   offer a **full copy** of the canonical content instead, and note that
-   the copy will drift unless kept in sync.
+3. **Pointer vs full copy**, per non-canonical tool. Pointer-aware
+   tools (Claude Code, Cursor's agent mode, …) default to **pointers**
+   — one source of truth. But **static readers** that load rules
+   verbatim and won't chase a link **default to a full copy**, because a
+   pointer would leave them effectively rule-less. Treat GitHub Copilot
+   (`.github/copilot-instructions.md`) and Cursor's static rule loading
+   as static readers by default. Surface this choice per tool rather
+   than burying it: state which tools you'll point and which you'll copy,
+   and note that any full copy drifts from the canonical unless kept in
+   sync. Let the user override either way.
 
 ## Step 1 — Detect existing instruction files
 
@@ -130,13 +134,14 @@ file — leave it out.
   recurring patterns and review feedback. A correction that shows up
   across multiple PRs is an undocumented convention worth writing down.
 
-## Step 3 — Confirm tool targets
+## Step 3 — Finalise tool targets
 
-From the Inputs answer and what Step 1 detected, finalise the list:
-the canonical file, plus each other tool's file as a **pointer** or a
-**full copy**. Confirm the list with the user before writing if it
-differs from what they asked for (e.g. you detected a tool they didn't
-mention, or vice versa).
+You already settled the canonical file and the tool list in Inputs
+(#1–#3) — this step records the final plan, it is not a second round of
+questions. Write down the canonical file plus each other tool's file
+marked **pointer** or **full copy**. Only return to the user if Step 1
+detection surfaced a tool the Inputs answer didn't cover (or named one
+that isn't actually present); otherwise proceed to write.
 
 ## Step 4 — Compose the canonical file
 
@@ -184,18 +189,18 @@ Drop any section the project gives you nothing real to put in.
 
 Write the canonical file. Then, for each selected tool:
 
-- **Pointer** (default): replace/create the file with the repo's
-  established pointer-line convention — keep any required top-of-file
-  frontmatter the tool needs, then a single line:
+- **Pointer** (pointer-aware tools): replace/create the file with the
+  repo's established pointer-line convention — keep any required
+  top-of-file frontmatter the tool needs, then a single line:
 
   ```
   Rules for this project live in [`<canonical>`](<relative-path>).
   ```
 
   No residual sections or "see also" blocks — clean pointer only.
-- **Full copy** (where the user chose it for a static reader): write the
-  canonical content into that tool's file verbatim, and note in the
-  report that it must be kept in sync.
+- **Full copy** (static readers, per Input #3, or where the user chose
+  it): write the canonical content into that tool's file verbatim, and
+  note in the report that it must be kept in sync.
 
 If a target file already exists (merge mode), preserve any
 tool-required frontmatter at its top.

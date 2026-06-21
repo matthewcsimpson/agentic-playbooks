@@ -24,7 +24,10 @@ restructuring sections, no tonal "polish."
 The user supplies:
 
 - **Consolidation strategy** — the most consequential decision, ask
-  it first. Two options:
+  it first. The default is **Keep separate** (the safe choice); when
+  the audit's *Consolidation recommendation* applies, actively
+  recommend **Consolidate to `AGENTS.md`** — but consolidation only
+  happens if the user explicitly picks it. Two options:
 
   - **Keep separate** (default) — each instruction file remains
     independent. The fix resolves explicit contradictions per the
@@ -108,6 +111,8 @@ lists which rules fall under which category. The per-rule findings
 section above it has the full detail (current text, proposed
 change). Missing rules and cross-file contradictions live in their
 own sections and are read directly (not via the Actions summary).
+The **Consolidation recommendation** section is read separately at
+consolidation time (Step 3a), only if the user opts into consolidation.
 
 ---
 
@@ -169,8 +174,13 @@ category then operates on the canonical file alone.
    canonical must be a root-level instruction file the project's
    tools actually read. Don't suggest a non-standard filename like
    `RULES.md` as canonical unless the user explicitly asks for it.
-   If the chosen canonical (`AGENTS.md` included) doesn't exist yet,
-   create it from the rules being moved in.
+   **The canonical must not be auto-generated.** Apply the Step 2
+   detection heuristic to the proposed canonical — if `AGENTS.md`
+   (or whatever was chosen) carries a generated marker in its top
+   region, refuse it as canonical (moving rules in would be wiped by
+   the next regeneration) and fall back to a hand-authored root file
+   like `CLAUDE.md`, surfacing the switch. If the chosen canonical
+   doesn't exist yet, create it from the rules being moved in.
 
 2. **Move rules from non-canonical files into the canonical:**
    - If a rule in a non-canonical file is identical (modulo

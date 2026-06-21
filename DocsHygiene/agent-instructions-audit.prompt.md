@@ -78,7 +78,10 @@ contradictions surface, and that's part of the value.
 When two or more **root-level** instruction files are present, also
 assess whether they should be consolidated to a single canonical file.
 **`AGENTS.md` is the recommended canonical** — the emerging cross-tool
-standard the most agents read natively. Capture this in the report's
+standard the most agents read natively — **unless `AGENTS.md` is itself
+auto-generated** (see the skip heuristic below), in which case it can
+never be canonical and you should recommend a hand-authored root file
+(typically `CLAUDE.md`) instead. Capture this in the report's
 *Consolidation recommendation* section so the companion
 `agent-instructions-fix` can action it. (Consolidation applies only to
 root-level, tool-equivalent files; nested per-directory instruction
@@ -256,7 +259,10 @@ reads this section when the user opts into consolidation.
 
 - Root-level instruction files found: <list, or "1 — n/a">
 - Recommended canonical: **`AGENTS.md`** (the cross-tool standard) —
-  or name another root-level file and say why it fits better.
+  or name another root-level file and say why it fits better. **Never
+  recommend an auto-generated file as canonical** — if `AGENTS.md` is
+  generated (e.g. by `tools/generate-adapters.py`), recommend a
+  hand-authored root file like `CLAUDE.md` and say so explicitly.
 - Files that would become pointers to it: <list>
 - Caveat: <flag any tool whose file won't follow a markdown pointer —
   notably GitHub Copilot reading `.github/copilot-instructions.md`, and
