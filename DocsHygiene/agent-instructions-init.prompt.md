@@ -118,13 +118,20 @@ Then the output-shape questions:
 - **Which agent tools the project uses** — which tools get a file
   pointing at the canonical. Auto-detect likely ones (a `.cursor/`
   directory, etc.) and confirm rather than asking cold.
-- **Pointer vs full copy**, per non-canonical tool — pointer-aware tools
-  (Claude Code, Cursor's agent mode) default to **pointers** (one source
-  of truth). **Static readers** that load rules verbatim and won't chase
-  a link — GitHub Copilot (`.github/copilot-instructions.md`) and
-  Cursor's static rule loading — default to a **full copy**, because a
-  pointer would leave them rule-less. Note any copy drifts unless kept in
-  sync. Let the user override either way.
+- **Pointer vs full copy**, per non-canonical tool. Default by how the
+  tool consumes its file:
+  - **Pointer-aware** (Claude Code, and any tool whose agent reads the
+    linked file) → default to a **pointer** (one source of truth).
+  - **Static readers** that load the rule file verbatim and won't chase
+    a link → default to a **full copy**, since a pointer would leave
+    them rule-less. Treat **GitHub Copilot**
+    (`.github/copilot-instructions.md`) and **Cursor**
+    (`.cursor/rules/**`) as static by default — Cursor injects rule
+    files directly.
+
+  Note any full copy drifts from the canonical unless kept in sync, and
+  let the user override either way (e.g. if they rely on a Cursor flow
+  that follows references, a pointer is fine).
 
 ## Step 3 — Compose the canonical file
 
