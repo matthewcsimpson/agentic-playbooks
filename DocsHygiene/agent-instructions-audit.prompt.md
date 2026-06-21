@@ -1,6 +1,6 @@
 ---
 description: Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
-related: [agent-instructions-fix]
+related: [agent-instructions-fix, agent-instructions-init]
 ---
 
 # Audit agent instructions
@@ -75,6 +75,15 @@ List which files exist and which you'll be auditing. If multiple files
 are present, audit **all** of them — the cross-file pass is where
 contradictions surface, and that's part of the value.
 
+When two or more **root-level** instruction files are present, also
+assess whether they should be consolidated to a single canonical file.
+**`AGENTS.md` is the recommended canonical** — the emerging cross-tool
+standard the most agents read natively. Capture this in the report's
+*Consolidation recommendation* section so the companion
+`agent-instructions-fix` can action it. (Consolidation applies only to
+root-level, tool-equivalent files; nested per-directory instruction
+files like `apps/web/CLAUDE.md` are scope-specific and never folded in.)
+
 **Skip auto-generated files.** Some projects auto-generate `AGENTS.md`
 or similar from other sources (the `tools/generate-adapters.py`
 pattern, Bazel's `gazelle`, etc.). Editing the file directly is
@@ -121,8 +130,10 @@ hand-authored (common), audit `CLAUDE.md` only and surface the
 generated `AGENTS.md` as out-of-scope.
 
 If none exist, stop — there's nothing to audit. Surface that and
-recommend starting from a minimal `CLAUDE.md` or `AGENTS.md` skeleton
-(language, naming, testing, contribution).
+recommend generating one from scratch with
+`/playbook agent-instructions-init`, which derives a canonical
+`AGENTS.md` (plus pointer files for the project's other tools) from the
+actual codebase and recent PRs.
 
 ## Step 2 — Enumerate rules
 
@@ -237,6 +248,24 @@ Rules in different instruction files that disagree:
 - Rule N (in `<file-a>`) says X; Rule M (in `<file-b>`) says Y.
   Recommend: <resolution>.
 
+## Consolidation recommendation
+
+Whether the project's root-level instruction files should collapse to a
+single canonical source of truth. The companion `agent-instructions-fix`
+reads this section when the user opts into consolidation.
+
+- Root-level instruction files found: <list, or "1 — n/a">
+- Recommended canonical: **`AGENTS.md`** (the cross-tool standard) —
+  or name another root-level file and say why it fits better.
+- Files that would become pointers to it: <list>
+- Caveat: <flag any tool whose file won't follow a markdown pointer —
+  notably GitHub Copilot reading `.github/copilot-instructions.md`, and
+  some Cursor flows. For those, recommend a full copy of the canonical
+  content instead, or keeping that file separate.>
+
+If only one root-level instruction file exists, state
+"n/a — single root-level instruction file" and skip.
+
 ## Mechanical enforcement opportunities
 
 Rules currently doc-only that could be moved to lint / hooks:
@@ -267,6 +296,7 @@ fix actions those separately and doesn't need them indexed here.
 - Rules drifted (compliance Mixed or Weak): <n>
 - Missing rules suggested: <n>
 - Cross-file contradictions: <n>
+- Consolidation: recommended to `AGENTS.md` / n/a
 - Mechanical enforcement opportunities: <n>
 ```
 

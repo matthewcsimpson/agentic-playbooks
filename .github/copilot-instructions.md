@@ -99,10 +99,13 @@ This file is generated from the prompts' YAML frontmatter by
 
 - **agent-instructions-audit** — Audit the project's agent / LLM instruction files for vague rules, missing examples, drifted compliance, and mechanical-enforcement opportunities.
   Read: `DocsHygiene/agent-instructions-audit.prompt.md`
-  Related: `agent-instructions-fix`
-- **agent-instructions-fix** — Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
+  Related: `agent-instructions-fix`, `agent-instructions-init`
+- **agent-instructions-fix** — Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to a canonical AGENTS.md. Commit per category. Local.
   Read: `DocsHygiene/agent-instructions-fix.prompt.md`
-  Related: `agent-instructions-audit`
+  Related: `agent-instructions-audit`, `agent-instructions-init`
+- **agent-instructions-init** — Generate a well-formed agent / LLM instructions file from scratch — derived from the actual codebase and recent PRs. Writes a canonical AGENTS.md and points each tool's file at it.
+  Read: `DocsHygiene/agent-instructions-init.prompt.md`
+  Related: `agent-instructions-audit`, `agent-instructions-fix`
 - **doc-code-drift-audit** — Read-only audit that finds places where documentation says one thing and the code does another (outdated commands, renamed env vars, drifted signatures, dead links).
   Read: `DocsHygiene/doc-code-drift-audit.prompt.md`
   Related: `doc-code-drift-fix`

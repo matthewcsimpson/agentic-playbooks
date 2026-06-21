@@ -6,4 +6,4 @@ user-invocable: false
 
 Follow the instructions in [`DocsHygiene/agent-instructions-audit.prompt.md`](../../../DocsHygiene/agent-instructions-audit.prompt.md).
 
-Related: `/playbook agent-instructions-fix`.
+Related: `/playbook agent-instructions-fix`, `/playbook agent-instructions-init`.

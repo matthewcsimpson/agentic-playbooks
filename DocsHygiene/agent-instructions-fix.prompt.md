@@ -1,6 +1,6 @@
 ---
-description: Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to one canonical. Commit per category. Local only.
-related: [agent-instructions-audit]
+description: Action findings from agent-instructions-audit: reword, add examples, codify undocumented, resolve contradictions, retire. Optional consolidate to a canonical AGENTS.md. Commit per category. Local.
+related: [agent-instructions-audit, agent-instructions-init]
 ---
 
 # Agent instructions fix
@@ -34,12 +34,19 @@ The user supplies:
     `.github/copilot-instructions.md` and won't follow pointers,
     `.cursor/rules/` is loaded directly by Cursor).
 
-  - **Consolidate to one canonical + pointer files** — pick one
-    root-level instruction file (typically `CLAUDE.md` or
-    `AGENTS.md`) as the source of truth. Move every rule from the
-    other root-level files into it; leave each non-canonical file
-    as a thin pointer (e.g. `AGENTS.md` becomes
-    `"Rules for this project live in [\`CLAUDE.md\`](./CLAUDE.md)."`).
+  - **Consolidate to a canonical `AGENTS.md` + pointer files** — pick
+    one root-level instruction file as the source of truth.
+    **`AGENTS.md` is the recommended canonical** (the cross-tool
+    standard the most agents read natively); offer another root-level
+    file only if the user prefers it. Move every rule from the other
+    root-level files into the canonical; leave each non-canonical file
+    as a thin pointer (e.g. `CLAUDE.md` becomes
+    `"Rules for this project live in [\`AGENTS.md\`](./AGENTS.md)."`).
+
+    When two or more root-level instruction files exist — and the
+    audit's *Consolidation recommendation* section recommends it —
+    proactively recommend this option (consolidating to `AGENTS.md`),
+    subject to the tradeoff below.
 
     **Tradeoff to surface to the user before they pick this:** thin
     pointers work for human readers and pointer-aware LLM agents
@@ -156,10 +163,14 @@ this runs **before** the category-by-category action — every later
 category then operates on the canonical file alone.
 
 1. **Confirm the canonical** the user picked (or ask now if not
-   specified). Hard rule: canonical must be a root-level
-   instruction file the project's tools actually read. Don't
-   suggest a non-standard filename like `RULES.md` as canonical
-   unless the user explicitly asks for it.
+   specified). **Recommend `AGENTS.md`** — the cross-tool standard
+   the most agents read natively; the audit's *Consolidation
+   recommendation* section names it as the default. Hard rule:
+   canonical must be a root-level instruction file the project's
+   tools actually read. Don't suggest a non-standard filename like
+   `RULES.md` as canonical unless the user explicitly asks for it.
+   If the chosen canonical (`AGENTS.md` included) doesn't exist yet,
+   create it from the rules being moved in.
 
 2. **Move rules from non-canonical files into the canonical:**
    - If a rule in a non-canonical file is identical (modulo
@@ -191,7 +202,23 @@ category then operates on the canonical file alone.
    pointer pattern (it doesn't match the "rule" shape the audit
    looks for) and skip the file.
 
-4. **Commit:** one commit for the whole consolidation, since the
+   **Static-reader exception.** A tool that won't follow a markdown
+   pointer (notably GitHub Copilot reading
+   `.github/copilot-instructions.md`, and some Cursor flows) would be
+   left rule-less by a thin pointer. For any such file flagged in the
+   audit's *Consolidation recommendation* caveat, write a **full copy**
+   of the canonical content instead of a pointer (and note in the
+   report that the copy must be kept in sync), or — if the user
+   prefers — leave that file out of the consolidation entirely.
+
+4. **Verify the pointers.** After moving the rules, re-read every
+   non-canonical root-level file and confirm each one is now either a
+   clean pointer to the canonical `AGENTS.md` (no residual rules) or
+   the deliberate full copy from the static-reader exception. The
+   canonical must hold every unique rule that was moved in. If any
+   file still carries stray rules, fix it before committing.
+
+5. **Commit:** one commit for the whole consolidation, since the
    set of file edits is one logical change.
 
    ```
@@ -201,7 +228,7 @@ category then operates on the canonical file alone.
    Body lists each non-canonical file reduced to a pointer plus
    the count of rules moved into the canonical.
 
-5. **After consolidation, the `resolve-contradiction` category
+6. **After consolidation, the `resolve-contradiction` category
    becomes a no-op** — there's a single source of truth, so any
    audit findings under that category are inherently resolved.
    Record them as "auto-resolved by consolidation" in the final
@@ -387,6 +414,11 @@ Output a short summary:
 - **Mechanical-enforcement findings deferred** — listed only if
   user did not opt in. Each entry: rule, proposed mechanism, the
   one-line user command to opt in next run.
+- **Consolidation result** — if consolidation ran: the canonical file
+  (`AGENTS.md` unless the user chose otherwise), each non-canonical file
+  and whether it became a pointer or a full copy (with the reason for
+  any copy), and confirmation that no non-canonical file still carries
+  stray rules. Omit if the user kept files separate.
 - **Files modified** — list (instruction files + any config
   files touched for mechanical enforcement).
 - **Commits created** — list with subjects.
