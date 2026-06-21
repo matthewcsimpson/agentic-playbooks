@@ -540,11 +540,14 @@ Audits that keep documentation honest.
 
 - `agent-instructions-init.prompt.md` — generates a well-formed agent
   / LLM instructions file from scratch, derived from the actual
-  codebase and recent PRs rather than boilerplate. Writes a canonical
-  `AGENTS.md` and points each tool the project uses (CLAUDE.md, Cursor
-  rules, Copilot instructions) at it. Merges into an existing
-  hand-authored file rather than clobbering it. Leaves files for
-  review; does not commit.
+  codebase and recent PRs rather than boilerplate. Establishes
+  evidence-backed code-convention rules (naming, imports, layout,
+  constants, error handling, …) grouped by topic, each concrete with
+  examples / exceptions and a pointer to whatever already enforces it.
+  Writes a canonical `AGENTS.md` and points each tool the project uses
+  (CLAUDE.md, Cursor rules, Copilot instructions) at it. Merges into an
+  existing hand-authored file rather than clobbering it. Leaves files
+  for review; does not commit.
 - `agent-instructions-audit.prompt.md` — auto-detects every agent /
   LLM instruction file in the repo (CLAUDE.md, AGENTS.md, Cursor
   rules, Copilot instructions, nested variants) and audits them all

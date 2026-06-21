@@ -89,10 +89,37 @@ file — leave it out.
   any task runner (`Makefile`, `Taskfile`, `justfile`, npm scripts) to
   find the **build / test / run / lint / typecheck** commands. These are
   the single highest-value thing an agent needs — get them exact.
-- **Conventions from code.** Sample a representative spread of source
-  files for the patterns an agent should match: naming, file/directory
-  layout, import style, error handling, logging, how modules are wired.
-  Note what's *consistent* (a real convention) vs *incidental*.
+- **Code conventions from code.** This is the heart of the file — see
+  Step 4 for how to render it. Sample a representative spread of source
+  files and look for a *consistent* convention along each of these
+  dimensions (the dimensions are stack-agnostic; what you find is
+  whatever the detected stack actually does). Document a rule only where
+  the codebase is consistent enough that an agent could violate it by
+  guessing wrong — skip dimensions where the project has no discernible
+  convention:
+  - **Naming** — files, directories, identifiers, types/classes,
+    constants, test files. (e.g. `snake_case` modules, `PascalCase`
+    components, a section-prefix scheme.)
+  - **Language / spelling** — any enforced locale or spelling convention
+    in identifiers, comments, and strings (e.g. US vs British/Canadian).
+  - **File & directory layout / colocation** — one-thing-per-folder,
+    where tests/styles/types sit relative to the thing they support.
+  - **Module boundaries / where code lives** — the "if it's pure it
+    goes here, if it's platform-bound it goes there" placement rules,
+    and when to promote shared code. Capture the *decision rule*, not
+    just the current layout.
+  - **Import style** — path aliases vs relative, ordering, barrel files.
+  - **Function / declaration style** — arrow vs declaration, explicit
+    return types, where each is required.
+  - **Constants vs magic values** — whether literals (routes, keys,
+    endpoints, status values) must be named constants, and where they
+    live.
+  - **Error handling & logging** — how errors propagate vs swallow, log
+    prefixes/levels, what must never be logged.
+  - **Comments** — when/why a comment is expected (e.g. issue refs,
+    rationale-over-restatement).
+  Note what's *consistent* (a real convention) vs *incidental* — one or
+  two files doing something is not a convention.
 - **Lean on existing config — don't restate it.** If ESLint, Prettier,
   ruff, gofmt, EditorConfig, etc. already enforce something, **reference
   the config** ("formatting is enforced by Prettier — run `npm run
@@ -120,10 +147,28 @@ default shape:
 1. **Project overview** — one short paragraph: what this is, the stack.
 2. **Setup / build / test / run** — the exact commands from Step 2. The
    part agents read first.
-3. **Code conventions** — only non-obvious, evidence-backed rules.
-   Reference linters/formatters rather than restating them. Make each
-   rule concrete with a one-line example or counter-example, the way the
-   audit grades for ("use `X` not `Y`", not "use sensible names").
+3. **Code conventions** — the substance of the file. Group rules under
+   topic headings (one per discernible dimension from Step 2 — Naming,
+   Imports, Functions, Constants, Error handling, Logging, Comments, …);
+   list only what's relevant to the detected stack and drop the rest.
+   For each rule:
+   - **Make it concrete** — a one-line example or counter-example, the
+     way the audit grades for ("use `X` not `Y`", not "use sensible
+     names").
+   - **Document exceptions inline** — the carve-outs are where agents
+     get it wrong; state them next to the rule.
+   - **Reference the enforcer, don't restate it** — if a linter,
+     formatter, type-checker, or CI check already enforces the rule,
+     name the specific rule/check and the command to run it ("enforced
+     by ESLint `id-length` — run `npm run lint`") instead of
+     re-describing what it owns.
+   - **Add a one-line *why* for non-obvious rules** — the rationale or
+     the incident behind it, so a reader can weigh edge cases.
+
+   Keep it stack-agnostic in framing but specific in content: the
+   *dimensions* are universal, the *rules* are whatever this project's
+   stack and code actually do. Do not import conventions from other
+   projects or invent rules the codebase doesn't follow.
 4. **Architecture / where things live** — the directory map and the
    "if you're changing X, look in Y" pointers.
 5. **Testing conventions** — framework, where tests live, how to run a
