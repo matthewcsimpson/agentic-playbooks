@@ -1,6 +1,6 @@
 ---
 name: agent-instructions-init
-description: Generate a well-formed agent / LLM instructions file from scratch — derived from the actual codebase and recent PRs. Writes a canonical AGENTS.md and points each tool's file at it.
+description: Set up a project's agent / LLM instructions at project start — interview for stack and convention preferences (opinionated defaults), write a canonical AGENTS.md, and point each tool's file at it.
 user-invocable: false
 ---
 
