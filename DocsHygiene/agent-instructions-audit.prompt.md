@@ -133,10 +133,11 @@ hand-authored (common), audit `CLAUDE.md` only and surface the
 generated `AGENTS.md` as out-of-scope.
 
 If none exist, stop — there's nothing to audit. Surface that and
-recommend generating one from scratch with
-`/playbook agent-instructions-init`, which derives a canonical
-`AGENTS.md` (plus pointer files for the project's other tools) from the
-actual codebase and recent PRs.
+recommend setting one up with `/playbook agent-instructions-init`, which
+interviews the user for their stack and convention preferences and
+writes a canonical `AGENTS.md` (plus pointer files for the project's
+other tools). The audit checks rules against the code; init is what
+establishes them in the first place.
 
 ## Step 2 — Enumerate rules
 

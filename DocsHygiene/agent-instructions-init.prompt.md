@@ -25,7 +25,9 @@ code exists, use the audit / fix pair to keep them honest.
   them as "Recommended: `<X>` — accept, or tell me otherwise."
 - Offer an **"accept all recommended defaults" fast path** up front. If
   the user takes it, skip straight to writing the file with the
-  recommended answers and let them review the result.
+  recommended answers and let them review the result — but still record
+  each answer's provenance as a *default* (not an explicit choice) so the
+  report (Step 6) can show the user what to revisit.
 - Only ask about dimensions **relevant to the chosen stack** — don't ask
   about JSX component naming for a Go service.
 - Keep it tight. This is a setup wizard, not an exam.
@@ -58,7 +60,13 @@ informed:
     propose changing — don't re-ask what the file already settles. Never
     silently drop or rewrite an existing rule; surface any change in the
     report with the reason.
-  - **No instruction files exist → fresh setup.**
+  - **No instruction files exist → fresh setup** (interview from
+    scratch). This holds **even when substantial source code already
+    exists** — `init` still *asks* the user for their preferences; it
+    does **not** switch to deriving rules by reading the code. Observing
+    what the code already does is the audit's job, not init's. (After
+    init, recommend running the audit to check the new rules against the
+    existing code.)
 
 ## Step 2 — Interview the user
 
@@ -170,9 +178,12 @@ frontmatter at its top.
 ## Step 5 — Verify
 
 - Re-read the canonical file end to end.
-- If a manifest exists, confirm every command you wrote actually exists /
-  is plausible for the stack; flag any the user gave that you couldn't
-  verify. Fabricated commands are the most damaging failure mode.
+- If a manifest with scripts exists, confirm every command you wrote
+  actually exists in it. On a true-greenfield project where no scripts
+  are defined yet, you can't verify — write the user-supplied (or
+  default) commands but mark them **user-asserted / unverified** in the
+  report rather than claiming they're confirmed. Fabricating a command
+  the user never gave is the most damaging failure mode.
 - Note which rules came from an explicit user answer vs an accepted
   recommended default, so the user can revisit the defaults.
 - Recommend running `/playbook agent-instructions-audit` once real code
