@@ -300,5 +300,37 @@ class InstallProjectTests(unittest.TestCase):
             )
 
 
+class GeneratedMarkerTests(unittest.TestCase):
+    """The project-local generated catalogs must carry the top-of-file marker
+    so the agent-instructions audit / init playbooks skip them as canonical."""
+
+    def _prompts(self) -> list[gen.Prompt]:
+        return [
+            gen.Prompt(
+                slug="test-coverage-audit",
+                collection="AuditTesting",
+                rel_path="AuditTesting/test-coverage-audit.prompt.md",
+                description="Audit test coverage.",
+                family="test-coverage-audit",
+            ),
+        ]
+
+    def test_agents_and_copilot_start_with_marker(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)
+            gen.generate_project_local(out, self._prompts())
+            for rel in ("AGENTS.md", ".github/copilot-instructions.md"):
+                content = (out / rel).read_text()
+                self.assertTrue(
+                    content.startswith(gen.GENERATED_MARKER),
+                    f"{rel} is missing the generated marker",
+                )
+                # First non-blank line is the exact strict phrase the
+                # audit / init heuristics match.
+                self.assertEqual(
+                    content.splitlines()[0], "<!-- AUTO-GENERATED -->"
+                )
+
+
 if __name__ == "__main__":
     sys.exit(unittest.main(verbosity=2))
