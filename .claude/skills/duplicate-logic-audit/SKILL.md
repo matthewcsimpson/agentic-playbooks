@@ -6,4 +6,4 @@ user-invocable: false
 
 Follow the instructions in [`Refactoring/duplicate-logic-audit.prompt.md`](../../../Refactoring/duplicate-logic-audit.prompt.md).
 
-Related: `/playbook duplicate-logic-fix`, `/playbook dead-code-audit`.
+Related: `/playbook duplicate-logic-fix`, `/playbook dead-code-audit`, `/playbook complexity-audit`.

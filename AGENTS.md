@@ -187,15 +187,21 @@ generated from those sources by `tools/generate-adapters.py`.
 
 ## Refactoring
 
+- **`complexity-audit`** — Find code that's used but more complex than it needs to be — needless indirection, collapsible control flow, reinvented stdlib, redundant derived state, over-parameterization. Read-only.
+  Path: `Refactoring/complexity-audit.prompt.md`
+  Related: `complexity-fix`, `dead-code-audit`, `duplicate-logic-audit`
+- **`complexity-fix`** — Action user-selected findings from the most recent complexity-audit report. Apply the reduction in place, verify the build, commit per category. Local commits only.
+  Path: `Refactoring/complexity-fix.prompt.md`
+  Related: `complexity-audit`
 - **`dead-code-audit`** — Find code that isn't used — exports never imported, components never rendered, branches never reached, env vars never read, permanently-on/off flags. Read-only.
   Path: `Refactoring/dead-code-audit.prompt.md`
-  Related: `dead-code-fix`, `duplicate-logic-audit`
+  Related: `dead-code-fix`, `duplicate-logic-audit`, `complexity-audit`
 - **`dead-code-fix`** — Action the in-scope findings from the most recent dead-code-audit report. Deletes dead code, verifies the build, commits locally per category. Does not push or open a PR.
   Path: `Refactoring/dead-code-fix.prompt.md`
   Related: `dead-code-audit`
 - **`duplicate-logic-audit`** — Find functions, modules, or components doing the same job under different names. Cluster, identify a winner, propose consolidations. Read-only — does not action.
   Path: `Refactoring/duplicate-logic-audit.prompt.md`
-  Related: `duplicate-logic-fix`, `dead-code-audit`
+  Related: `duplicate-logic-fix`, `dead-code-audit`, `complexity-audit`
 - **`duplicate-logic-fix`** — Action user-selected clusters from the most recent duplicate-logic-audit report. Migrate callers to the recommended winner, delete losers, verify, commit per cluster. Local commits only.
   Path: `Refactoring/duplicate-logic-fix.prompt.md`
   Related: `duplicate-logic-audit`
