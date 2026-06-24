@@ -663,7 +663,24 @@ MIT — see [`LICENSE`](LICENSE).
 
 ## Status
 
-Stable at [v1.7.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.7.0).
+Stable at [v1.8.0](https://github.com/matthewcsimpson/agentic-playbooks/releases/tag/v1.8.0).
+v1.8.0 adds a third refactoring lens to the `Refactoring/`
+collection. New `complexity-audit` finds code that *is* used and
+singular but more complex than it needs to be — needless
+indirection, control flow that could collapse, hand-rolled logic the
+standard library already provides, state kept in sync that could be
+derived, and parameters no caller varies. It classifies findings
+Clear win / Judgment call / Risky and defers unused-code and
+cross-file-duplication to its siblings rather than double-reporting.
+New `complexity-fix` actions the findings, defaulting to `band:clear`
+and verifying the build between each one. The three audits now
+partition cleanly — `dead-code` deletes what isn't used,
+`duplicate-logic` merges the same job done in two places, and
+`complexity` reduces what's used-but-over-built in place — and the
+`Refactoring/` README documents the recommended full-sweep order
+(dead-code → duplicate-logic → complexity, action each cycle before
+auditing the next). Catalog grew from 72 to 74 playbooks.
+
 v1.7.0 adds Vite + React SPA coverage and rounds out the React
 build-toolchain set. New `post-milestone-audit-vite` audits a
 client-rendered Vite + React SPA (TypeScript) after a milestone —
