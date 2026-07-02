@@ -25,6 +25,18 @@ probe — out of scope here. If the user wants those, point them at a
 `MilestoneSmoke/post-milestone-smoke-test.web.prompt.md` run after
 this audit.
 
+## How to ask
+
+When a step needs the user to choose or answer — picking findings to
+action, resolving an ambiguity, confirming a decision — present it as
+a structured selection: the `AskUserQuestion` tool in Claude Code
+(multi-select when more than one item can be chosen), or an
+equivalent numbered list in a harness without that tool. Never ask as
+a free-form prose question. Put the recommended option first, marked
+"(Recommended)".
+
+---
+
 ## Inputs
 
 Scope is load-bearing — a whole-app SEO audit and a "just the

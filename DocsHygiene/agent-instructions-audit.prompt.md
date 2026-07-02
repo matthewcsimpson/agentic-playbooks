@@ -16,6 +16,18 @@ This is the meta-prompt the other audits hint at. When an audit
 catches a rule the codebase didn't follow, the real fix may be to
 sharpen the rule's wording — not just the code.
 
+## How to ask
+
+When a step needs the user to choose or answer — picking findings to
+action, resolving an ambiguity, confirming a decision — present it as
+a structured selection: the `AskUserQuestion` tool in Claude Code
+(multi-select when more than one item can be chosen), or an
+equivalent numbered list in a harness without that tool. Never ask as
+a free-form prose question. Put the recommended option first, marked
+"(Recommended)".
+
+---
+
 ## Inputs
 
 Scope is the load-bearing input. If the user hasn't named a scope,

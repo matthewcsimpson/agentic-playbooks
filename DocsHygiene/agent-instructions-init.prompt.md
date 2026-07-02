@@ -20,9 +20,14 @@ code exists, use the audit / fix pair to keep them honest.
 
 ## How to ask (interaction model)
 
+- **Present every question as a structured selection** — the
+  `AskUserQuestion` tool in Claude Code (multi-select when more than
+  one item can be chosen), or an equivalent numbered list in a harness
+  without that tool. Never ask as a free-form prose question.
 - **Batch questions by topic**, and give each one an **opinionated,
-  stack-aware recommended default** so the user can move fast. Phrase
-  them as "Recommended: `<X>` — accept, or tell me otherwise."
+  stack-aware recommended default** so the user can move fast. Make
+  the recommended default the first option, marked "(Recommended)";
+  the user can always pick "Other" to answer in their own words.
 - Offer an **"accept all recommended defaults" fast path** up front. If
   the user takes it, skip straight to writing the file with the
   recommended answers and let them review the result — but still record

@@ -617,6 +617,12 @@ existing ones.
   one. Reach for the project's `CLAUDE.md` / `AGENTS.md` /
   `.cursor/rules/**` for project-specific rules at runtime instead
   of hard-coding them.
+- **Structured questions.** Any step that asks the user to choose
+  or answer must instruct the agent to present a structured
+  selection (`AskUserQuestion` in Claude Code, a numbered list in
+  harnesses without it), never a free-form prose question. Include
+  the standard "How to ask" section — copy it from any existing
+  prompt that has one.
 
 ### Proposing a change
 

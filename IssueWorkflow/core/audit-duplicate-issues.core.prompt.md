@@ -17,6 +17,18 @@ Everything else below is shared.
 
 ---
 
+## How to ask
+
+When a step needs the user to choose or answer — picking findings to
+action, resolving an ambiguity, confirming a decision — present it as
+a structured selection: the `AskUserQuestion` tool in Claude Code
+(multi-select when more than one item can be chosen), or an
+equivalent numbered list in a harness without that tool. Never ask as
+a free-form prose question. Put the recommended option first, marked
+"(Recommended)".
+
+---
+
 ## Step 0 — Ask for the target
 
 Before doing anything else, ask the user which repository /
